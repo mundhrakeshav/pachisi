@@ -1,0 +1,18 @@
+.appbar-brand {
+  font-size: 25px;
+  padding: 0 2vw;
+}
+
+.user-address {
+  margin-left: 200px;
+  color: white;
+}
+
+.nav-button {
+  text-decoration: none;
+  color: white;
+}
+.nav-button:hover {
+  text-decoration: none;
+  color: rgb(153, 150, 150);
+}

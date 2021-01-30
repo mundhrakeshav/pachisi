@@ -1,0 +1,9 @@
+.left-column,
+.right-column {
+  background-color: #343a40;
+}
+
+.column-wrapper {
+  padding: 2vh 2vw;
+  min-height: 100vh;
+}
