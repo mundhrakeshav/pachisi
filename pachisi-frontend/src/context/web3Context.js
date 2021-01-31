@@ -1,13 +1,15 @@
 import React, { createContext, useState, useContext } from "react";
 import Web3 from "web3";
+import config from "../config";
+import { Biconomy } from "@biconomy/mexa";
+
 import { ProviderModalContext } from "./providerModalContext";
 
 export const Web3Context = createContext();
-let _web3 = new Web3();
 
 const Web3ContextProvider = (props) => {
   //
-  const [web3, setWeb3] = useState(_web3);
+  const [web3, setWeb3] = useState();
   const [userAddress, setUserAddress] = useState(null);
   const [web3ConnectStatus, setWeb3ConnectStatus] = useState(0);
   // connectStatus
@@ -17,23 +19,36 @@ const Web3ContextProvider = (props) => {
   //
   const connectMetamask = async () => {
     if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
       try {
         const provider = window.ethereum;
-        await provider.enable();
-        setWeb3(new Web3(provider));
+        const biconomy = new Biconomy(provider, {
+          apiKey: config.biconomyApiKey,
+          debug: true,
+        });
+        await window.ethereum.enable();
+        setWeb3(new Web3(biconomy));
         setUserAddress(provider.selectedAddress);
-        //
+
+        biconomy
+          .onEvent(biconomy.READY, async () => {
+            setWeb3ConnectStatus(1);
+
+            provider.on("accountsChanged", function (accounts) {
+              setUserAddress(accounts[0]);
+            });
+          })
+          .onEvent(biconomy.ERROR, (err, message) => {
+            alert(message);
+            console.log(err, message);
+          });
       } catch (error) {
-        // User denied account access...
-        alert("User denied account access");
+        console.log("Please allow access to connect to web3 ");
       }
     } else {
       console.log(
         "Non-Ethereum browser detected. You should consider trying MetaMask!"
       );
     }
-    setWeb3ConnectStatus(1);
   };
   const connectPortis = async () => {};
 
