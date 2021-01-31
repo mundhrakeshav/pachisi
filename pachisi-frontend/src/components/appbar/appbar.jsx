@@ -1,19 +1,30 @@
-import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Navbar, Nav, Spinner } from "react-bootstrap";
+import { ProviderModalContext } from "../../context/providerModalContext";
+import { Web3Context } from "../../context/web3Context";
+
 import "./appbar.css";
-import { Container, Row, Button } from "react-bootstrap";
-import {
-  FaHome,
-  FaUser,
-  FaNewspaper,
-  FaBlogger,
-  FaUpload,
-  FaMoneyBillAlt,
-  FaLock,
-} from "react-icons/fa";
+import { Button } from "react-bootstrap";
+
 import { Link } from "react-router-dom";
 
 const AppBar = () => {
+  const { setModalShow } = useContext(ProviderModalContext);
+  const { web3ConnectStatus, userAddress } = useContext(Web3Context);
+  useEffect(() => {
+    console.log("UseEffect From appbar");
+  });
+
+  const web3ProviderName = () => {
+    if (web3ConnectStatus === 0) {
+      return "Not Connected";
+    } else if (web3ConnectStatus === 1) {
+      return "MetaMask";
+    } else if (web3ConnectStatus === 0) {
+      return "Portis";
+    }
+  };
+
   return (
     <Navbar bg="dark" expand="lg" variant="dark">
       <b>
@@ -24,7 +35,7 @@ const AppBar = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="user-address">
-          0xD98B11c92aFC66Dd45E540A1AC17Bdf60beB2d18
+          {userAddress ? userAddress : <Spinner animation="border" />}
         </Nav>
         <Nav className="ml-auto">
           <Nav.Link>
@@ -56,6 +67,13 @@ const AppBar = () => {
               Weather
             </Link>
           </Nav.Link>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setModalShow(true);
+            }}>
+            {web3ProviderName()}
+          </Button>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

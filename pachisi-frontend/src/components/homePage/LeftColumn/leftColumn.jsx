@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Container, Row, Button } from "react-bootstrap";
 import {
   FaHome,
@@ -6,13 +6,15 @@ import {
   FaNewspaper,
   FaBlogger,
   FaUpload,
-  FaMoneyBillAlt,
   FaLock,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Web3Context } from "../../../context/web3Context";
 import "./leftColumn.css";
 
 const LeftColumn = () => {
+  const { web3, userAddress } = useContext(Web3Context);
+
   return (
     <Container className="left-column-container">
       <Row className="left-column-row">
@@ -57,11 +59,22 @@ const LeftColumn = () => {
       <br />
       <br />
       <Row>
-        <Link to="/add">
-          <Button variant="secondary" className="left-column-button">
-            <FaUpload /> Add
-          </Button>
-        </Link>
+        <Button
+          variant="secondary"
+          className="left-column-button"
+          onClick={() => {
+            try {
+              web3.eth.sendTransaction({
+                from: userAddress,
+                to: "0xD98B11c92aFC66Dd45E540A1AC17Bdf60beB2d18,",
+                value: web3.utils.toWei("5", "ether"),
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          }}>
+          <FaUpload /> Add
+        </Button>
       </Row>
     </Container>
   );

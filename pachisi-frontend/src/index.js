@@ -2,13 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Web3ContextProvider from "./context/web3Context";
+import ProviderModalContextProvider from "./context/providerModalContext";
+
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <ProviderModalContextProvider>
+    <Web3ContextProvider>
+      <App />
+    </Web3ContextProvider>
+  </ProviderModalContextProvider>,
   document.getElementById("root")
 );
 

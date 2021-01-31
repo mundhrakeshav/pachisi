@@ -1,18 +1,22 @@
 import AppBar from "./components/appbar/appbar";
+import React, { useContext, useEffect } from "react";
 import HomePage from "./components/homePage/homepage";
+import { Web3Context } from "./context/web3Context";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PlayWithNumbersPage from "./components/playWithNumbers/playWithNumbers";
 import SportsPage from "./components/sport/sports";
+
 import WeatherPage from "./components/weather/weather";
 import PricePredictionPage from "./components/price-prediction/pricePrediction";
-import Cricket from "./components/sport/cricket/cricket";
-import BasketBall from "./components/sport/BasketBall/BasketBall";
-import FootBall from "./components/sport/FootBall/FootBall";
+import ProviderModal from "./components/ProviderModal/providerModal";
 
 function App() {
+  const isLoading = true;
+
   return (
     <div className="App">
       <Router>
+        <ProviderModal />
         <AppBar />
         <Switch>
           <Route path="/" component={HomePage} exact />
