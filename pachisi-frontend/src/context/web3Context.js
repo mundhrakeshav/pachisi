@@ -1,9 +1,7 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState } from "react";
 import Web3 from "web3";
 import config from "../config";
 import { Biconomy } from "@biconomy/mexa";
-
-import { ProviderModalContext } from "./providerModalContext";
 
 export const Web3Context = createContext();
 
