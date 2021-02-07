@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 
 const axiosAPIInstance = axios.create({
-  baseURL: "http://beede6f3ea27.ngrok.io/api",
+  baseURL: "http://localhost:5000/api",
 });
 
 module.exports = { axiosAPIInstance };

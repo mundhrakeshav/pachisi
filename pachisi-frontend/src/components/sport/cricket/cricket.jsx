@@ -22,14 +22,14 @@ const Cricket = () => {
     console.log("Recieved MatchList", response);
 
     setMatchList(matches);
-    console.log(response.data.matches);
+    console.log(matches);
     setLoading(false);
   };
 
   return (
     <Row>
       <Col>
-        <img src="https://static.toiimg.com/thumb/msid-75312300,width-1070,height-580,imgsize-1165804,resizemode-75,overlay-toi_sw,pt-32,y_pad-40/photo.jpg" />
+        <img src="https://s3.amazonaws.com/99Covers-Facebook-Covers/watermark/1656.jpg" />
       </Col>
       <Col xl={7} className="middle-column column-wrapper">
         {matchList}

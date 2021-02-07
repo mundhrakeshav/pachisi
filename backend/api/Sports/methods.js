@@ -51,15 +51,58 @@ const getFootballMatches = async (req, res) => {
   matches = response.data.data;
   console.log(matches[0]);
   matches.forEach((element) => {
+    const home_half_timeScore = () => {
+      if (element["stats"]["ht_score"] === null) {
+        return 0;
+      } else {
+        return parseInt(element["stats"]["ht_score"].split("-")[0]);
+      }
+    };
+
+    const away_half_timeScore = () => {
+      if (element["stats"]["ht_score"] === null) {
+        return 0;
+      } else {
+        return parseInt(element["stats"]["ht_score"].split("-")[1]);
+      }
+    };
+
+    const home_full_timeScore = () => {
+      if (element["stats"]["ft_score"] === null) {
+        return 0;
+      } else {
+        return parseInt(element["stats"]["ft_score"].split("-")[0]);
+      }
+    };
+
+    const away_full_timeScore = () => {
+      if (element["stats"]["ft_score"] === null) {
+        return 0;
+      } else {
+        return parseInt(element["stats"]["ft_score"].split("-")[1]);
+      }
+    };
+
+    // console.log(home_half_timeScore);
+    // console.log(away_half_timeScore);
+    // console.log(home_full_timeScore);
+    // console.log(away_full_timeScore);
+
     matchList.push({
       matchId: element["match_id"],
       statusCode: element["status_code"],
       status: element["status"],
-      match_start_date: timestamp.fromDate(
+      match_start_time: timestamp.fromDate(
         element["match_start"].split(" ")[0]
       ),
-      half_time_score: element["stats"]["ht_score"],
-      full_time_score: element["stats"]["ft_score"],
+      // half_time_score: element["stats"]["ht_score"],
+      // full_time_score: element["stats"]["ft_score"],
+
+      home_half_timeScore: home_half_timeScore(),
+      away_half_timeScore: away_half_timeScore(),
+      home_full_timeScore: home_full_timeScore(),
+      away_full_timeScore: away_full_timeScore(),
+
       home_team: element["home_team"]["name"],
       away_team: element["away_team"]["name"],
       home_team_short_code: element["home_team"]["short_code"],

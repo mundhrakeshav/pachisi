@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Navbar, Nav, Spinner } from "react-bootstrap";
 import { ProviderModalContext } from "../../context/providerModalContext";
 import { Web3Context } from "../../context/web3Context";
-
+import dai from "../../contracts/dai";
 import "./appbar.css";
 import { Button } from "react-bootstrap";
 
@@ -10,9 +10,11 @@ import { Link } from "react-router-dom";
 
 const AppBar = () => {
   const { setModalShow } = useContext(ProviderModalContext);
-  const { web3ConnectStatus, userAddress } = useContext(Web3Context);
+  const { web3ConnectStatus, userAddress, signTx } = useContext(Web3Context);
+  const [daiContract, setDaiContract] = useState({});
   useEffect(() => {
     console.log("UseEffect From appbar");
+    setDaiContract(dai.contract);
   });
 
   const web3ProviderName = () => {
@@ -22,6 +24,27 @@ const AppBar = () => {
       return "MetaMask";
     } else if (web3ConnectStatus === 0) {
       return "Portis";
+    }
+  };
+
+  const approveDai = async () => {
+    if (userAddress) {
+      const amount = prompt("How much dai you wanna approve?");
+      console.log(daiContract.methods);
+      const nonce = await daiContract.methods.getNonce(userAddress).call();
+      console.log(nonce);
+      const daiContractName = dai.contractName;
+      //TODO update hardcoded address
+      const functionSignature = daiContract.methods
+        .approve(
+          "0x70129EA2f8c3e4CA8C45621A5eC73a5A93a466D3",
+          (parseInt(amount) * 10 ** 18).toString()
+        )
+        .encodeABI();
+
+      signTx(daiContractName, dai.contractAddress, nonce, functionSignature);
+    } else {
+      alert("Please initialize web3 connection.");
     }
   };
 
@@ -67,13 +90,21 @@ const AppBar = () => {
               Weather
             </Link>
           </Nav.Link>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setModalShow(true);
-            }}>
-            {web3ProviderName()}
-          </Button>
+
+          <Nav.Item className="nav-item">
+            <Button variant="secondary" onClick={approveDai}>
+              {"Approve Contract"}
+            </Button>
+          </Nav.Item>
+          <Nav.Item className="nav-item">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setModalShow(true);
+              }}>
+              {web3ProviderName()}
+            </Button>
+          </Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
