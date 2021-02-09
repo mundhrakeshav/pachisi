@@ -137,14 +137,14 @@ const getCricketMatchWinner = async (req, res) => {
   if (matchID % 2 == 0) {
     return res.json({ RAW: 1 });
   } else {
-    return res.json({ RAW: 0 });
+    return res.json({ RAW: 2 });
   }
 };
 
 const getCricketTossWinner = async (req, res) => {
   const matchID = parseInt(req.params.matchID);
   if (matchID % 2 == 0) {
-    return res.json({ RAW: 0 });
+    return res.json({ RAW: 2 });
   } else {
     return res.json({ RAW: 1 });
   }

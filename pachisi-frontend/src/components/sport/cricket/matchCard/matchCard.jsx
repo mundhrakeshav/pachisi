@@ -7,7 +7,7 @@ const MatchCard = (props) => {
   console.log(matchDetails);
   return (
     <Card
-      style={{ width: "50vw" }}
+      style={{ width: "40vw" }}
       variant="dark"
       bg="dark"
       className="match-card">
@@ -15,6 +15,7 @@ const MatchCard = (props) => {
         <Card.Title>
           {matchDetails["team-1"] + "  VS  " + matchDetails["team-2"]}
         </Card.Title>
+        <Card.Subtitle>{matchDetails["unique_id"]}</Card.Subtitle>
         <Card.Text>{matchDetails.type}</Card.Text>
         <Card.Text>{matchDetails.date.split("T")[0]}</Card.Text>
         <Card.Text>
@@ -47,7 +48,6 @@ const MatchCard = (props) => {
         <Row>
           <Col xs={12}>
             <Button variant="secondary">
-              {" "}
               {matchDetails.winner_team
                 ? "Claim tokens"
                 : `Claim tokens after match`}

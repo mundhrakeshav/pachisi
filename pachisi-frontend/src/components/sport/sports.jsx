@@ -13,16 +13,16 @@ const SportsPage = () => {
       <Col xl={3} className="left-column column-wrapper">
         <SportsLeftColumn />
       </Col>
-      <Col xl={9} className="middle-column column-wrapper">
+      <Col xl={6} className="middle-column column-wrapper">
         <Switch>
           <Route path="/sports/cricket" component={Cricket} />
           <Route path="/sports/football" component={FootBall} exact />
           <Route path="/sports/basketball" component={BasketBall} exact />
         </Switch>
       </Col>
-      {/* <Col xl={1} className="right-column column-wrapper">
+      <Col xl={3} className="right-column column-wrapper">
         <SportsRightColumn />
-      </Col> */}
+      </Col>
     </Row>
   );
 };
