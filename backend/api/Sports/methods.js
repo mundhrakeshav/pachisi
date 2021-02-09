@@ -1,44 +1,60 @@
 const axios = require("axios").default;
+const { now } = require("unix-timestamp");
 const timestamp = require("unix-timestamp");
-
+const cricketResponse = require("./responses/cricketResponse.json");
 const getCricketData = async (req, res) => {
-  const response = await axios.get(
-    "https://cricapi.com/api/matches?apikey=lnxWOlg0fFfJchga3Vw8CnGOZh42"
-  );
+  // const response = await axios.get(
+  //   "https://cricapi.com/api/matches?apikey=lnxWOlg0fFfJchga3Vw8CnGOZh42"
+  // );
+  //MOCK RESPONSE
   let matches = [];
   let matchList = []; //matchList will be sent to client
-
-  matches = response["data"]["matches"];
-  console.log(matches);
+  matches = cricketResponse["matches"];
   matches.forEach((element) => {
+    const timeEpoch = timestamp.fromDate(element["date"].split("T")[0]);
     matchList.push({
       unique_id: element["unique_id"],
-      timeEpoch: timestamp.fromDate(element["date"].split("T")[0]),
+      timeEpoch: timeEpoch,
       date: element["date"].split("T")[0],
       "team-1": element["team-1"],
       "team-2": element["team-2"],
       type: element["type"],
-      toss_winner_team: element["toss_winner_team"]
-        ? element["toss_winner_team"]
-        : null,
-      winner_team: element["winner_team"] ? element["winner_team"] : null,
-      squad: element["squad"],
-      matchStarted: element["matchStarted"],
-      winner_team_number: element["winner_team"]
-        ? element["winner_team"] == element["team-1"]
-          ? 1
-          : 2
-        : null,
-      toss_winner_team_number:
-        element["toss_winner_team"] && element["toss_winner_team"] !== "no toss"
-          ? element["toss_winner_team"] == element["team-1"]
+      toss_winner_team: timeEpoch > now() ? null : element["team-1"],
+      toss_winner_team_number: timeEpoch > now() ? null : 1,
+      matchStarted: timeEpoch < now(),
+      winner_team:
+        timeEpoch < now()
+          ? parseInt(element["unique_id"]) % 2 == 0
+            ? element["team-1"]
+            : element["team-2"]
+          : null,
+      winner_team_number:
+        timeEpoch < now() + 43200
+          ? parseInt(element["unique_id"]) % 2 == 0
             ? 1
             : 2
           : null,
+      // toss_winner_team: element["toss_winner_team"]
+      //   ? element["toss_winner_team"]
+      //   : null,
+      // winner_team: element["winner_team"] ? element["winner_team"] : null,
+      // squad: element["squad"],
+      // matchStarted: element["matchStarted"],
+      // winner_team_number: element["winner_team"]
+      //   ? element["winner_team"] == element["team-1"]
+      //     ? 1
+      //     : 2
+      //   : null,
+      // toss_winner_team_number:
+      //   element["toss_winner_team"] && element["toss_winner_team"] !== "no toss"
+      //     ? element["toss_winner_team"] == element["team-1"]
+      //       ? 1
+      //       : 2
+      //     : null,
       squad: element["squad"],
     });
   });
-
+  console.log(matchList);
   return res.json({ matchList });
 };
 
@@ -116,6 +132,30 @@ const getFootballMatches = async (req, res) => {
   return res.json({ message: "Success", matchList });
 };
 
+const getCricketMatchWinner = async (req, res) => {
+  const matchID = parseInt(req.params.matchID);
+  if (matchID % 2 == 0) {
+    return res.json({ RAW: 1 });
+  } else {
+    return res.json({ RAW: 0 });
+  }
+};
+
+const getCricketTossWinner = async (req, res) => {
+  const matchID = parseInt(req.params.matchID);
+  if (matchID % 2 == 0) {
+    return res.json({ RAW: 0 });
+  } else {
+    return res.json({ RAW: 1 });
+  }
+};
+
 const getFootballMatchData = async (req, res) => {};
 
-module.exports = { getCricketData, getFootballMatchData, getFootballMatches };
+module.exports = {
+  getCricketData,
+  getFootballMatchData,
+  getFootballMatches,
+  getCricketMatchWinner,
+  getCricketTossWinner,
+};
