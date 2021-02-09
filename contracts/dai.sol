@@ -1,95 +1,105 @@
-// https://eips.ethereum.org/EIPS/eip-20
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.5.0 <0.8.0;
+//SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
 
-interface Token {
+import "./EIP712MetaTx.sol";
 
-    /// @param _owner The address from which the balance will be retrieved
-    /// @return balance the balance
-    function balanceOf(address _owner) external view returns (uint256 balance);
 
-    /// @notice send `_value` token to `_to` from `msg.sender`
-    /// @param _to The address of the recipient
-    /// @param _value The amount of token to be transferred
-    /// @return success Whether the transfer was successful or not
-    function transfer(address _to, uint256 _value)  external returns (bool success);
 
-    /// @notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`
-    /// @param _from The address of the sender
-    /// @param _to The address of the recipient
-    /// @param _value The amount of token to be transferred
-    /// @return success Whether the transfer was successful or not
-    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);
 
-    /// @notice `msg.sender` approves `_addr` to spend `_value` tokens
-    /// @param _spender The address of the account able to transfer the tokens
-    /// @param _value The amount of wei to be approved for transfer
-    /// @return success Whether the approval was successful or not
-    function approve(address _spender  , uint256 _value) external returns (bool success);
+contract Dai is EIP712MetaTransaction("Dai", "1") {
+    // --- Auth ---
+    mapping (address => uint) public wards;
 
-    /// @param _owner The address of the account owning tokens
-    /// @param _spender The address of the account able to transfer the tokens
-    /// @return remaining Amount of remaining tokens allowed to spent
-    function allowance(address _owner, address _spender) external view returns (uint256 remaining);
+    modifier auth {
+        require(wards[msgSender()] == 1, "Dai/not-authorized");
+        _;
+    }
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
-}
-
-contract Standard_Token is Token {
-    uint256 constant private MAX_UINT256 = 2**256 - 1;
-    mapping (address => uint256) public balances;
-    mapping (address => mapping (address => uint256)) public allowed;
+    // --- ERC20 Data ---
+    string  public constant name     = "Dai Stablecoin";
+    string  public constant symbol   = "DAI";
+    string  public constant version  = "1";
+    uint8   public constant decimals = 18;
     uint256 public totalSupply;
-    /*
-    NOTE:
-    The following variables are OPTIONAL vanities. One does not have to include them.
-    They allow one to customise the token contract & in no way influences the core functionality.
-    Some wallets/interfaces might not even bother to look at this information.
-    */
-    string public name;                   //fancy name: eg Simon Bucks
-    uint8 public decimals;                //How many decimals to show.
-    string public symbol;                 //An identifier: eg SBX
 
-    constructor(uint256 _initialAmount, string memory _tokenName, uint8 _decimalUnits, string  memory _tokenSymbol) {
-        balances[msg.sender] = _initialAmount;               // Give the creator all initial tokens
-        totalSupply = _initialAmount;                        // Update total supply
-        name = _tokenName;                                   // Set the name for display purposes
-        decimals = _decimalUnits;                            // Amount of decimals for display purposes
-        symbol = _tokenSymbol;                               // Set the symbol for display purposes
+    mapping (address => uint)                      public balanceOf;
+    mapping (address => mapping (address => uint)) public allowance;
+    mapping (address => uint)                      public nonces;
+
+    event Approval(address indexed src, address indexed guy, uint wad);
+    event Transfer(address indexed src, address indexed dst, uint wad);
+
+    // --- Math ---
+    function add(uint x, uint y) internal pure returns (uint z) {
+        require((z = x + y) >= x);
+    }
+    function sub(uint x, uint y) internal pure returns (uint z) {
+        require((z = x - y) <= x);
     }
 
-    function transfer(address _to, uint256 _value) public override returns (bool success) {
-        require(balances[msg.sender] >= _value, "token balance is lower than the value requested");
-        balances[msg.sender] -= _value;
-        balances[_to] += _value;
-        emit Transfer(msg.sender, _to, _value); //solhint-disable-line indent, no-unused-vars
-        return true;
+    // --- EIP712 niceties ---
+    bytes32 public DOMAIN_SEPARATOR;
+    // bytes32 public constant PERMIT_TYPEHASH = keccak256("Permit(address holder,address spender,uint256 nonce,uint256 expiry,bool allowed)");
+    bytes32 public constant PERMIT_TYPEHASH = 0xea2aa0a1be11a07ed86d755c93467f4f82362b452371d1ba94d1715123511acb;
+
+    constructor(uint256 chainId_) public {
+        wards[msgSender()] = 1;
+        DOMAIN_SEPARATOR = keccak256(abi.encode(
+            keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+            keccak256(bytes(name)),
+            keccak256(bytes(version)),
+            chainId_,
+            address(this)
+        ));
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) public override returns (bool success) {
-        uint256 allowance = allowed[_from][msg.sender];
-        require(balances[_from] >= _value && allowance >= _value, "token balance or allowance is lower than amount requested");
-        balances[_to] += _value;
-        balances[_from] -= _value;
-        if (allowance < MAX_UINT256) {
-            allowed[_from][msg.sender] -= _value;
+    // --- Token ---
+    function transfer(address dst, uint wad) external returns (bool) {
+        return transferFrom(msgSender(), dst, wad);
+    }
+    function transferFrom(address src, address dst, uint wad)
+        public returns (bool)
+    {
+        require(balanceOf[src] >= wad, "Dai/insufficient-balance");
+        if (src != msgSender()) {
+            require(allowance[src][msgSender()] >= wad, "Dai/insufficient-allowance");
+            allowance[src][msgSender()] = sub(allowance[src][msgSender()], wad);
         }
-        emit Transfer(_from, _to, _value); //solhint-disable-line indent, no-unused-vars
+        balanceOf[src] = sub(balanceOf[src], wad);
+        balanceOf[dst] = add(balanceOf[dst], wad);
+        emit Transfer(src, dst, wad);
+        return true;
+    }
+    function mint(address usr, uint wad) external auth {
+        balanceOf[usr] = add(balanceOf[usr], wad);
+        totalSupply    = add(totalSupply, wad);
+        emit Transfer(address(0), usr, wad);
+    }
+    function burn(address usr, uint wad) external {
+        require(balanceOf[usr] >= wad, "Dai/insufficient-balance");
+        if (usr != msgSender()) {
+            require(allowance[usr][msgSender()] >= wad, "Dai/insufficient-allowance");
+            allowance[usr][msgSender()] = sub(allowance[usr][msgSender()], wad);
+        }
+        balanceOf[usr] = sub(balanceOf[usr], wad);
+        totalSupply    = sub(totalSupply, wad);
+        emit Transfer(usr, address(0), wad);
+    }
+    function approve(address usr, uint wad) external returns (bool) {
+        allowance[msgSender()][usr] = wad;
+        emit Approval(msgSender(), usr, wad);
         return true;
     }
 
-    function balanceOf(address _owner) public override view returns (uint256 balance) {
-        return balances[_owner];
+    // --- Alias ---
+    function push(address usr, uint wad) external {
+        transferFrom(msgSender(), usr, wad);
+    }
+    function pull(address usr, uint wad) external {
+        transferFrom(usr, msgSender(), wad);
+    }
+    function move(address src, address dst, uint wad) external {
+        transferFrom(src, dst, wad);
     }
 
-    function approve(address _spender, uint256 _value) public override returns (bool success) {
-        allowed[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value); //solhint-disable-line indent, no-unused-vars
-        return true;
-    }
-
-    function allowance(address _owner, address _spender) public override view returns (uint256 remaining) {
-        return allowed[_owner][_spender];
-    }
 }
