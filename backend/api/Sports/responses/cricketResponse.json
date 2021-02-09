@@ -1,142 +1,16 @@
 {
   "matches": [
     {
-      "unique_id": 1234026,
-      "date": "2021-02-10T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-06T22:40:00.000Z",
-      "team-1": "Auckland",
-      "team-2": "Wellington",
-      "type": "Twenty20",
-      "toss_winner_team": "Wellington",
-      "winner_team": "Wellington",
-      "squad": false,
-      "matchStarted": true
-    },
-    {
-      "unique_id": 1249595,
-      "date": "2021-02-06T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-06T23:00:00.000Z",
-      "team-1": "Australian Capital Territory Women",
-      "team-2": "South Australia Women",
-      "toss_winner_team": "Australian Capital Territory Women",
-      "winner_team": "South Australia Women",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
-      "unique_id": 1234058,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T02:30:00.000Z",
-      "team-1": "Auckland Women",
-      "team-2": "Wellington Women",
-      "type": "Twenty20",
-      "toss_winner_team": "Auckland Women",
-      "winner_team": "Auckland Women",
-      "squad": false,
-      "matchStarted": true
-    },
-    {
-      "unique_id": 1235340,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T07:30:00.000Z",
-      "team-1": "Boland",
-      "team-2": "Gauteng",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
-      "unique_id": 1235341,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T07:30:00.000Z",
-      "team-1": "Border",
-      "team-2": "Free State",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
-      "unique_id": 1235343,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T07:30:00.000Z",
-      "team-1": "Mpumalanga",
-      "team-2": "Western Province",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
-      "unique_id": 1235342,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T07:30:00.000Z",
-      "team-1": "North West",
-      "team-2": "Northerns",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
-      "unique_id": 1235405,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T08:00:00.000Z",
-      "team-1": "Gauteng Women",
-      "team-2": "Western Province Women",
-      "type": "Twenty20",
-      "squad": false,
-      "matchStarted": true
-    },
-    {
-      "unique_id": 1235404,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T08:00:00.000Z",
-      "team-1": "KwaZulu-Natal Inland Women",
-      "team-2": "Northern Cape Women",
-      "type": "Twenty20",
-      "squad": false,
-      "matchStarted": true
-    },
-    {
-      "unique_id": 1235406,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T08:00:00.000Z",
-      "team-1": "Northerns Women",
-      "team-2": "North West Women",
-      "type": "Twenty20",
-      "squad": false,
-      "matchStarted": true
-    },
-    {
-      "unique_id": 1249421,
-      "date": "2021-02-07T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-07T13:00:00.000Z",
-      "team-1": "Leeward Islands",
-      "team-2": "Windward Islands",
-      "toss_winner_team": "Leeward Islands",
-      "winner_team": "Windward Islands",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
-      "unique_id": 1249422,
-      "date": "2021-02-08T00:00:00.000Z",
-      "dateTimeGMT": "2021-02-08T17:30:00.000Z",
-      "team-1": "Guyana",
-      "team-2": "Barbados",
-      "squad": false,
-      "matchStarted": true,
-      "type": ""
-    },
-    {
       "unique_id": 1249285,
       "date": "2021-02-09T00:00:00.000Z",
       "dateTimeGMT": "2021-02-09T07:00:00.000Z",
       "team-1": "Zimbabwe Women",
       "team-2": "Pakistan Women",
       "type": "ODI",
+      "toss_winner_team": "Zimbabwe Women",
+      "winner_team": "Pakistan Women",
       "squad": false,
-      "matchStarted": false
+      "matchStarted": true
     },
     {
       "unique_id": 1249596,
@@ -2760,11 +2634,11 @@
     }
   ],
   "v": "1",
-  "ttl": 41,
+  "ttl": 56,
   "provider": {
     "source": "Various",
     "url": "https://cricapi.com/",
-    "pubDate": "2021-02-08T18:26:28.905Z"
+    "pubDate": "2021-02-09T20:10:09.086Z"
   },
   "creditsLeft": 242
 }

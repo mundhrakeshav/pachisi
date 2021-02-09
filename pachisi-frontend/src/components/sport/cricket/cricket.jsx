@@ -19,10 +19,8 @@ const Cricket = () => {
     response.data.matchList.forEach((element, index) => {
       matches.push(<MatchCard matchDetails={element} key={index} />);
     });
-    console.log("Recieved MatchList", response);
 
     setMatchList(matches);
-    console.log(matches);
     setLoading(false);
   };
 

@@ -70,7 +70,8 @@ const Web3ContextProvider = (props) => {
     contractName,
     contractAddress,
     nonce,
-    functionSignature
+    functionSignature,
+    contract
   ) => {
     let domainData = {
       name: contractName,
@@ -107,43 +108,60 @@ const Web3ContextProvider = (props) => {
       },
       (error, response) => {
         console.info(`User signature is ${response.result}`);
-        // let { r, s, v } = getSignatureParameters(response.result);
-        // sendSignedTransaction(userAddress, functionSignature, r, s, v);
+        let { r, s, v } = getSignatureParameters(response.result);
+        console.log(r, s, v);
+        sendSignedTransaction(
+          userAddress,
+          functionSignature,
+          r,
+          s,
+          v,
+          contract
+        );
       }
     );
   };
-  const sendSignedTransaction = async (userAddress, functionData, r, s, v) => {
+  const sendSignedTransaction = async (
+    userAddress,
+    functionData,
+    r,
+    s,
+    v,
+    contract
+  ) => {
     try {
-      // let gasLimit = await contract.methods
-      //   .executeMetaTransaction(userAddress, functionData, r, s, v)
-      //   .estimateGas({ from: userAddress });
-      // let gasPrice = await web3.eth.getGasPrice();
-      // console.log(gasLimit);
-      // console.log(gasPrice);
-      // let tx = contract.methods
-      //   .executeMetaTransaction(userAddress, functionData, r, s, v)
-      //   .send({
-      //     from: userAddress,
-      //     gasPrice: gasPrice,
-      //     gasLimit: gasLimit,
-      //   });
-      // tx.on("transactionHash", function (hash) {
-      //   console.log(`Transaction hash is ${hash}`);
-      //   alert(`Transaction sent by relayer with hash ${hash}`);
-      // })
-      //   .once("confirmation", function (confirmationNumber, receipt) {
-      //     console.log(receipt);
-      //     alert("Transaction confirmed on chain");
-      //   })
-      //   .on("error", (error) => {
-      //     if (error.code == 150 || error.code == 151 || error.code == 152) {
-      //       alert(error.message);
-      //       console.log("Meta Transaction usage limit reached");
-      //     }
-      //     console.log(error);
-      //   });
+      let gasLimit = await contract.methods
+        .executeMetaTransaction(userAddress, functionData, r, s, v)
+        .estimateGas({ from: userAddress });
+      let gasPrice = await web3.eth.getGasPrice();
+      console.log(gasLimit);
+      console.log(gasPrice);
+      let tx = contract.methods
+        .executeMetaTransaction(userAddress, functionData, r, s, v)
+        .send({
+          from: userAddress,
+          gasPrice: gasPrice,
+          gasLimit: gasLimit,
+        });
+      console.log(tx);
+      tx.on("transactionHash", function (hash) {
+        console.log(`Transaction hash is ${hash}`);
+        alert(`Transaction sent by relayer with hash ${hash}`);
+      })
+        .once("confirmation", function (confirmationNumber, receipt) {
+          console.log(receipt);
+          alert("Transaction confirmed on chain");
+        })
+        .on("error", (error) => {
+          if (error.code == 150 || error.code == 151 || error.code == 152) {
+            alert(error.message);
+            console.log("Meta Transaction usage limit reached");
+          }
+          console.log(error);
+        });
     } catch (error) {
-      console.log(error);
+      alert("you probably forgot give allowance");
+      alert(error);
     }
   };
   const getSignatureParameters = (signature) => {

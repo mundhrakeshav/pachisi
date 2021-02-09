@@ -1,10 +1,72 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { Web3Context } from "../../../../context/web3Context";
+import cricketPachisi from "../../../../contracts/CricketPachisi";
 import { Card, Button, Row, Col } from "react-bootstrap";
 import "./matchcard.css";
+const timestamp = require("unix-timestamp");
 const MatchCard = (props) => {
-  console.log("MatchCard", props);
+  const { web3ConnectStatus, userAddress, signTx } = useContext(Web3Context);
+  const [gameAddress, setGameAddress] = useState("Game Not Created");
+  const [cricketPachisiContract, setCricketPachisiContract] = useState({});
+  useEffect(() => {
+    setCricketPachisiContract(cricketPachisi.contract);
+    init();
+  });
+
+  const predictMatch = async (_predictedOutcome) => {
+    if (userAddress) {
+      let _betAmount = parseInt(prompt("How much you wanna bet?"));
+      _betAmount = (_betAmount * 10 ** 18).toString();
+      console.log(_betAmount);
+      const _gameStartTime = timestamp.fromDate(
+        matchDetails.date.split("T")[0]
+      );
+
+      const functionSigPreictMatch = cricketPachisiContract.methods
+        .predictCricketMatch(
+          matchDetails["team-1"] + " vs " + matchDetails["team-2"],
+          matchDetails["unique_id"],
+          matchDetails["team-1"],
+          matchDetails["team-2"],
+          _gameStartTime,
+          _betAmount,
+          _predictedOutcome
+        )
+        .encodeABI();
+
+      //   console.log(functionSigPreictMatch);
+
+      const nonce = await cricketPachisiContract.methods
+        .getNonce(userAddress)
+        .call();
+      //  contractName, contractAddress, nonce, functionSignature;
+
+      signTx(
+        cricketPachisi.contractName,
+        cricketPachisi.contractAddress,
+        nonce,
+        functionSigPreictMatch,
+        cricketPachisiContract
+      );
+    } else {
+      alert("Please allow web3 access.");
+    }
+  };
+
+  const predictToss = (_predictedOutcome) => {
+    // uint _uidOfMatch,
+    // string memory _outcome1,
+    // string memory _outcome2,
+    // uint _gameStartTime,
+    // uint _betAmount,
+    // bool _predictedOutcome)
+    const _gameStartTime = timestamp.fromDate(matchDetails.date.split("T")[0]);
+    console.log(_gameStartTime);
+    // const _betAmount = prompt("How much you wanna bet?");
+  };
+
+  const init = async () => {};
   const matchDetails = props.matchDetails;
-  console.log(matchDetails);
   return (
     <Card
       style={{ width: "40vw" }}
@@ -38,16 +100,28 @@ const MatchCard = (props) => {
         Predict Match Winner
         <Row>
           <Col xs={6}>
-            <Button variant="secondary">{matchDetails["team-1"]}</Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                predictMatch(true);
+              }}>
+              {matchDetails["team-1"]}
+            </Button>
           </Col>
           <Col xs={6}>
-            <Button variant="secondary">{matchDetails["team-2"]}</Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                predictMatch(false);
+              }}>
+              {matchDetails["team-2"]}
+            </Button>
           </Col>
         </Row>
         <br />
         <Row>
           <Col xs={12}>
-            <Button variant="secondary">
+            <Button variant="secondary" onClick={async () => {}}>
               {matchDetails.winner_team
                 ? "Claim tokens"
                 : `Claim tokens after match`}
