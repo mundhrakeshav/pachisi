@@ -1,117 +1,208 @@
 //SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.0;
-pragma experimental ABIEncoderV2;
 
+import "./cricketGame.sol";
 import { Dai } from "./dai.sol";
 import { EIP712MetaTransaction } from "./EIP712MetaTx.sol";
 import { String } from "./stringLibrary.sol";
-import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/ChainlinkClient.sol";
 
-
-contract CricketPachisi is ChainlinkClient, EIP712MetaTransaction("CricketPachisi", "1"){
-    using String for string;
+contract CricketPachisi is EIP712MetaTransaction("CricketPachisi", "1"){
     
-    string public matchURL = "https://pachisi.herokuapp.com/api/sports/cricketMatchResults/";
-    string public tossURL = "https://pachisi.herokuapp.com/api/sports/cricketTossResults/";
-
-    event fullfilled(uint team);
-    
-    address private oracle;
+    Dai private daiContract;
     address constant private DAI_ADDRESS = 0x665F9c9B90aDb43d6a50B6C0bEb6F300f3af723a;
-    bytes32 private jobId;
-    uint256 private fee;
-    
-    uint public tossWinner;
-    uint public matchWinner;
-    
-    string public title;
-    string public outcome1;
-    string public outcome2;
-    
-    uint public totalVolumeOnMatchOutcome1;
-    uint public totalVolumeOnMatchOutcome2;
-    uint public gameStartTime;
-    uint public gameEndTime;
-    
-    uint public totalVolumeOnTossOutcome1;
-    uint public totalVolumeOnTossOutcome2;
-    uint test = 1;
-    address public betCreator;        
-    
-    mapping(address => uint) public betAmountsMatchOutcome1;        
-    mapping(address => uint) public betAmountsMatchOutcome2;        
-    mapping(address => uint) public betAmountsTossOutcome1;        
-    mapping(address => uint) public betAmountsTossOutcome2;      
 
     
-    constructor(string memory _title, string memory _outcome1, string memory _outcome2, uint _gameStartTime, address _betCreator) public {
-        setChainlinkToken(0x70d1F773A9f81C852087B77F6Ae6d3032B02D2AB);
-        oracle = 0xBf87377162512f8098f78f055DFD2aDAc34cbB47;
-        jobId = "6b57e3fe0d904ba48d137b39350c7892";
-        fee = 10 ** 16; // 0.01 LINK
-        title = _title; 
-        outcome1 = _outcome1; 
-        outcome2 = _outcome2; 
-        gameStartTime = _gameStartTime; 
-        betCreator = _betCreator;
-        gameEndTime = _gameStartTime + 43200;
+    //UID to CricketMatch
+    mapping(uint => CricketGame) public cricketBets;
+    mapping(uint => bool) public cricketBetCreated;
+        
+    //Initial bet amount should be above 10 Dai
+    modifier betAbove10(uint betAmount){
+        require(betAmount >=10 ** 19, "Initial bet is less than 10");
+        _;   
     }
+    
+    //DaiContract is approved to transfer specified amount
+    modifier daiContractApproved(uint betAmount) {
+        require(betAmount < daiContract.allowance(msgSender(), address(this)), "This contract is not allowed to transfer specified betAmount");    
+        _;
+    }
+    
+    //Specified bet closing time should be after now
+    modifier beforeGameStartTime(uint betClosingTime) {
+        require(betClosingTime < block.timestamp, "Bet can't be placed after match has started.");
+        _;
+    }
+    
+    modifier afterBetEndTime(uint _uidOfMatch) {
+        CricketGame _cricketGame = cricketBets[_uidOfMatch];
+        require(block.timestamp > _cricketGame.gameEndTime(),"It can only be claimed after bet ends.");
+        _;
+    }
+    
+    
+    constructor() public {
+        daiContract = Dai(DAI_ADDRESS);
+    }
+    
+    function predictCricketMatch( 
+        string memory _title, 
+        uint _uidOfMatch,
+        string memory _outcome1, 
+        string memory _outcome2, 
+        uint _gameStartTime,
+        uint _betAmount,
+        bool _predictedOutcome)
+             public 
+            // betAbove10(_betAmount) 
+            // daiContractApproved(_betAmount) 
+            // beforeGameStartTime(_gameStartTime) 
+            {
+        
+        if(!cricketBetCreated[_uidOfMatch]){
+            createCricketMatchBet(_title, _uidOfMatch, _outcome1, _outcome2, _gameStartTime, _betAmount, _predictedOutcome);
+        } else {
+            addCricketMatchBet(_uidOfMatch, _betAmount, _predictedOutcome); 
+        }
+
+    }
+    //100000000000000000000
+      function createCricketMatchBet(
+        string memory _title, 
+        uint _uidOfMatch,
+        string memory _outcome1, 
+        string memory _outcome2, 
+        uint _gameStartTime,
+        uint _betAmount,
+        bool _predictedOutcome
+            ) private {
+                
+        cricketBets[_uidOfMatch] = new CricketGame(_title, _outcome1, _outcome2, _gameStartTime, msgSender());
+        cricketBetCreated[_uidOfMatch] = true;
+        
+        addCricketMatchBet(_uidOfMatch, _betAmount, _predictedOutcome);
+        }
 
     
     function addCricketMatchBet(  
+        uint _uidOfMatch,
         uint _betAmount,
-        bool _predictedOutcome,
-        address _userAddress) 
-            public {
-             if(_predictedOutcome) {
-                totalVolumeOnMatchOutcome1 += _betAmount;
-                betAmountsMatchOutcome1[_userAddress] += _betAmount;
-            } else {
-                totalVolumeOnMatchOutcome2 += _betAmount;
-                betAmountsMatchOutcome2[_userAddress] += _betAmount;
-            }
+        bool _predictedOutcome) 
+            private {
+        
+            CricketGame _cricketGame = cricketBets[_uidOfMatch];
+            _cricketGame.addCricketMatchBet(_betAmount, _predictedOutcome,msgSender()); 
+            pullMoney(msgSender(), _betAmount);
+        }
+
+
+      function predictCricketToss( 
+        string memory _title, 
+        uint _uidOfMatch,
+        string memory _outcome1, 
+        string memory _outcome2, 
+        uint _gameStartTime,
+        uint _betAmount,
+        bool _predictedOutcome)
+             public 
+            // betAbove10(_betAmount) 
+            // daiContractApproved(_betAmount) 
+            // beforeGameStartTime(_gameStartTime) 
+            {
+        
+        if(!cricketBetCreated[_uidOfMatch]){
+            createCricketTossBet(_title, _uidOfMatch, _outcome1, _outcome2, _gameStartTime, _betAmount, _predictedOutcome);
+        } else {
+            addCricketTossBet(_uidOfMatch, _betAmount, _predictedOutcome); 
+        }
+
+    }
+    //100000000000000000000
+      function createCricketTossBet(
+        string memory _title, 
+        uint _uidOfMatch,
+        string memory _outcome1, 
+        string memory _outcome2, 
+        uint _gameStartTime,
+        uint _betAmount,
+        bool _predictedOutcome
+            ) private {
+                
+        cricketBets[_uidOfMatch] = new CricketGame(_title, _outcome1, _outcome2, _gameStartTime, msgSender());
+        cricketBetCreated[_uidOfMatch] = true;
+        
+        addCricketTossBet(_uidOfMatch, _betAmount, _predictedOutcome);
+        }
+
+    
+    function addCricketTossBet(  
+        uint _uidOfMatch,
+        uint _betAmount,
+        bool _predictedOutcome) 
+            private {
+            CricketGame _cricketGame = cricketBets[_uidOfMatch];
+            _cricketGame.addCricketTossBet(_betAmount, _predictedOutcome,msgSender()); 
+            pullMoney(msgSender(), _betAmount);
+    }
+    
+    function pullMoney(address _from, uint _amount) private {
+        daiContract.pull(_from, _amount);
+    }
+    
+    function pushMoney(address _to, uint _amount) private {
+        daiContract.push(_to, _amount);
+    }
+    
+    function resolveCricketToss(string memory _uidOfMatchString, uint _uidOfMatchInt) public {
+        CricketGame _cricketGame = cricketBets[_uidOfMatchInt];
+        _cricketGame.resolveToss(_uidOfMatchString);
+    }
+    
+    
+    function resolveCricketMatch(string memory _uidOfMatchString, uint _uidOfMatchInt) public {
+        CricketGame _cricketGame = cricketBets[_uidOfMatchInt];
+        _cricketGame.resolveMatch(_uidOfMatchString);
+    }
+    
+    function claimCricketFunds(uint _uidOfMatch) public 
+    // afterBetEndTime(_uidOfMatch)
+    {
+        CricketGame _cricketGame = cricketBets[_uidOfMatch];
+        uint _totalVolOnMatchOutcome1 = _cricketGame.totalVolumeOnMatchOutcome1();//1212
+        uint _totalVolOnMatchOutcome2 = _cricketGame.totalVolumeOnMatchOutcome2();//1212
+        uint _totalVolOnTossOutcome1 = _cricketGame.totalVolumeOnTossOutcome1();
+        uint _totalVolOnTossOutcome2 = _cricketGame.totalVolumeOnTossOutcome2();
+        
+        uint _usersBetOnMatchOutcome1 = _cricketGame.betAmountsMatchOutcome1(msgSender());//1212
+        uint _usersBetOnMatchOutcome2 = _cricketGame.betAmountsMatchOutcome2(msgSender());//1212
+        uint _usersBetOnTossOutcome1 = _cricketGame.betAmountsTossOutcome1(msgSender());
+        uint _usersBetOnTossOutcome2 = _cricketGame.betAmountsTossOutcome2(msgSender());
+    
+        uint _matchWinner = _cricketGame.matchWinner();//2
+        uint _tossWinner = _cricketGame.tossWinner();
+        
+        uint _amountUserGetsMatch;
+        uint _amountUserGetsToss;
+        
+        if(_matchWinner == 1) {
+            uint _usersStakeInFunds = _usersBetOnMatchOutcome1/_totalVolOnMatchOutcome1;
+                 _amountUserGetsMatch = _usersStakeInFunds * (_totalVolOnMatchOutcome1 + _totalVolOnMatchOutcome2) * 95 / 100;
+        } else if(_matchWinner == 2) {
+            uint _usersStakeInFunds = _usersBetOnMatchOutcome2/_totalVolOnMatchOutcome2;
+                 _amountUserGetsMatch = _usersStakeInFunds * (_totalVolOnMatchOutcome1 + _totalVolOnMatchOutcome2) * 95 / 100;
+        }
+
+        if(_tossWinner == 1) {
+            uint _usersStakeInFunds = _usersBetOnTossOutcome1/_totalVolOnTossOutcome1;
+                 _amountUserGetsToss = _usersStakeInFunds * (_totalVolOnTossOutcome1 + _totalVolOnTossOutcome2) * 95 / 100;
+        } else if(_tossWinner == 2)  {
+            uint _usersStakeInFunds = _usersBetOnTossOutcome2/_totalVolOnTossOutcome2;
+                 _amountUserGetsToss = _usersStakeInFunds * (_totalVolOnTossOutcome1 + _totalVolOnTossOutcome2) * 95 / 100;
         }
         
-        
-    function resolveMatch(string memory _uidOfMatch) public returns (bytes32 requestId) {
-        //
-        Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfillMatch.selector);
-        
-        // Set the URL to perform the GET request on
-        request.add("get", String.concat2(matchURL, _uidOfMatch));
-        
-        request.add("path", "RAW");
-        
-        request.addInt("times", 1);
-        
-        // Sends the request
-        return sendChainlinkRequestTo(oracle, request, fee);
+        pushMoney(msgSender(), _amountUserGetsToss + _amountUserGetsMatch);
+        _cricketGame.claimUserFunds(msgSender());
     }
     
-    function fulfillMatch(bytes32 _requestId, uint256 _result) public recordChainlinkFulfillment(_requestId) {
-        matchWinner = _result;
-        emit fullfilled(_result);
-    }
-    
-    
-    function resolveToss(string memory _uidOfMatch) public returns (bytes32 requestId) {
-        Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfillToss.selector);
-        
-        // Set the URL to perform the GET request on
-        request.add("get", String.concat2(tossURL, _uidOfMatch));
-        
-        request.add("path", "RAW");
-        
-        request.addInt("times", 1);
-        
-        // Sends the request
-        return sendChainlinkRequestTo(oracle, request, fee);
-    }
-    
-    function fulfillToss(bytes32 _requestId, uint256 _result) public recordChainlinkFulfillment(_requestId) {
-        test = 2;
-        tossWinner = _result;
-        emit fullfilled(_result);
-    }
 }

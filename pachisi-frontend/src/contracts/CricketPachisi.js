@@ -132,6 +132,49 @@ const abi = [
     inputs: [
       {
         internalType: "string",
+        name: "_title",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_uidOfMatch",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "_outcome1",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_outcome2",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_gameStartTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_betAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_predictedOutcome",
+        type: "bool",
+      },
+    ],
+    name: "predictCricketToss",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
         name: "_uidOfMatchString",
         type: "string",
       },
@@ -230,7 +273,7 @@ Contract.setProvider(
   })
 );
 
-const address = "0xb5BE93a0e9EE3a65C5C457e7D925EE6F1b47cf64";
+const address = "0x97f7518380Dc4eE648A29B899aF61903F51E6926";
 
 export default {
   contract: new Contract(abi, address),

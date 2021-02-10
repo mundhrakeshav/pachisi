@@ -65,6 +65,57 @@ const MatchCard = (props) => {
     // const _betAmount = prompt("How much you wanna bet?");
   };
 
+  const resolveCricketMatch = async () => {
+    if (userAddress) {
+      const functionSigResolveMatch = cricketPachisiContract.methods
+        .resolveCricketMatch(
+          matchDetails["unique_id"].toString(),
+          matchDetails["unique_id"]
+        )
+        .encodeABI();
+
+      //   console.log(functionSigPreictMatch);
+
+      const nonce = await cricketPachisiContract.methods
+        .getNonce(userAddress)
+        .call();
+      //  contractName, contractAddress, nonce, functionSignature;
+
+      signTx(
+        cricketPachisi.contractName,
+        cricketPachisi.contractAddress,
+        nonce,
+        functionSigResolveMatch,
+        cricketPachisiContract
+      );
+    } else {
+      alert("Please allow web3 access.");
+    }
+  };
+
+  const claimCricketFunds = async () => {
+    if (userAddress) {
+      const functionSigResolveMatch = cricketPachisiContract.methods
+        .claimCricketFunds(matchDetails["unique_id"])
+        .encodeABI();
+
+      const nonce = await cricketPachisiContract.methods
+        .getNonce(userAddress)
+        .call();
+      //  contractName, contractAddress, nonce, functionSignature;
+
+      signTx(
+        cricketPachisi.contractName,
+        cricketPachisi.contractAddress,
+        nonce,
+        functionSigResolveMatch,
+        cricketPachisiContract
+      );
+    } else {
+      alert("Please allow web3 access.");
+    }
+  };
+  //999054999999999879999984
   const init = async () => {};
   const matchDetails = props.matchDetails;
   return (
@@ -119,9 +170,14 @@ const MatchCard = (props) => {
           </Col>
         </Row>
         <br />
+        <Button variant="secondary" onClick={resolveCricketMatch}>
+          Resolve Match
+        </Button>
+        <br />
+        <br />
         <Row>
           <Col xs={12}>
-            <Button variant="secondary" onClick={async () => {}}>
+            <Button variant="secondary" onClick={claimCricketFunds}>
               {matchDetails.winner_team
                 ? "Claim tokens"
                 : `Claim tokens after match`}
