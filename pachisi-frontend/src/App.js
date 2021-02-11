@@ -19,11 +19,11 @@ function App() {
         <ProviderModal />
         <AppBar />
         <Switch>
-          <Route path="/" component={HomePage} exact />
-          <Route path="/numbers" component={PlayWithNumbersPage} exact />
+          <Route path="/home" component={HomePage} />
+          <Route path="/numbers" component={PlayWithNumbersPage} />
           <Route path="/sports" component={SportsPage} />
-          <Route path="/prices" component={PricePredictionPage} exact />
-          <Route path="/weather" component={WeatherPage} exact />
+          <Route path="/prices" component={PricePredictionPage} />
+          <Route path="/weather" component={WeatherPage} />
 
           {/* 
           <Route path="/researchPaper" component={PapersPage} exact />

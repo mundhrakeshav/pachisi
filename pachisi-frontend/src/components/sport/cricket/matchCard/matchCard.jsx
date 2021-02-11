@@ -3,6 +3,9 @@ import { Web3Context } from "../../../../context/web3Context";
 import cricketPachisi from "../../../../contracts/CricketPachisi";
 import { Card, Button, Row, Col } from "react-bootstrap";
 import "./matchcard.css";
+import Web3 from "web3";
+const web3 = new Web3();
+
 const timestamp = require("unix-timestamp");
 const MatchCard = (props) => {
   const { web3ConnectStatus, userAddress, signTx } = useContext(Web3Context);
@@ -16,8 +19,7 @@ const MatchCard = (props) => {
   const predictMatch = async (_predictedOutcome) => {
     if (userAddress) {
       let _betAmount = parseInt(prompt("How much you wanna bet?"));
-      _betAmount = (_betAmount * 10 ** 18).toString();
-      console.log(_betAmount);
+
       const _gameStartTime = timestamp.fromDate(
         matchDetails.date.split("T")[0]
       );
@@ -29,7 +31,7 @@ const MatchCard = (props) => {
           matchDetails["team-1"],
           matchDetails["team-2"],
           _gameStartTime,
-          _betAmount,
+          web3.utils.toWei(_betAmount),
           _predictedOutcome
         )
         .encodeABI();

@@ -47,7 +47,7 @@ const LeftColumn = () => {
         </Link>
       </Row>{" "}
       <Row>
-        <Link to="/prices">
+        <Link to="/home/myprices">
           <Button variant="secondary" className="left-column-button">
             <FaLock /> Price Prediction
           </Button>

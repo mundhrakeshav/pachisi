@@ -41,7 +41,7 @@ const AppBar = () => {
         </Nav>
         <Nav className="ml-auto">
           <Nav.Link>
-            <Link to="/home" className="nav-button">
+            <Link to="/" className="nav-button">
               Home
             </Link>
           </Nav.Link>
@@ -59,18 +59,18 @@ const AppBar = () => {
           </Nav.Link>
 
           <Nav.Link>
-            <Link to="/prices" className="nav-button">
+            <Link to="/prices/cryptocurrencies" className="nav-button">
               Price Prediction
             </Link>
           </Nav.Link>
 
           <Nav.Link>
-            <Link to="/weather" className="nav-button">
-              Weather
+            <Link to="/custom" className="nav-button">
+              Custom
             </Link>
           </Nav.Link>
           <Nav.Link>
-            <Link to="/" className="nav-button">
+            <Link to="/home" className="nav-button">
               <Button variant="secondary" onClick={() => {}}>
                 Your Predicitions
               </Button>

@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Web3Context } from "../../../../context/web3Context";
-import { ProviderModalContext } from "../../../../context/providerModalContext";
-import dai from "../../../../contracts/dai";
+import "./pricePredictionRight.css";
+import dai from "../../../contracts/dai";
+import pricePrediction from "../../../contracts/pricePrediction";
 import Web3 from "web3";
-import CricketPachisi from "../../../../contracts/CricketPachisi";
-import { Button, Col, Row } from "react-bootstrap";
-
+import { Web3Context } from "../../../context/web3Context";
+import { Switch, Route } from "react-router-dom";
+import { Row, Col, Button } from "react-bootstrap";
 const web3 = new Web3();
-const CricketRightColumn = () => {
-  const { setModalShow } = useContext(ProviderModalContext);
-  const { web3ConnectStatus, userAddress, signTx } = useContext(Web3Context);
+
+const PricePredictionRight = () => {
   const [daiContract, setDaiContract] = useState({});
+  const { web3ConnectStatus, userAddress, signTx } = useContext(Web3Context);
+
   useEffect(() => {
     console.log("UseEffect From appbar");
     setDaiContract(dai.contract);
   });
   const approveDai = async () => {
-    // const amount = prompt("How much dai you wanna approve?");
-    // console.log(web3.utils.toWei(amount));
-
     if (userAddress) {
       const amount = prompt("How much dai you wanna approve?");
       if (amount) {
@@ -28,7 +26,7 @@ const CricketRightColumn = () => {
         const daiContractName = dai.contractName;
         //TODO update hardcoded address
         const functionSignature = daiContract.methods
-          .approve(CricketPachisi.contractAddress, web3.utils.toWei(amount))
+          .approve(pricePrediction.contractAddress, web3.utils.toWei(amount))
           .encodeABI();
         console.log(functionSignature);
         signTx(
@@ -46,12 +44,12 @@ const CricketRightColumn = () => {
   return (
     <Row>
       <Col>
-        <Button variant="secondary" onClick={approveDai}>
-          Approve Dai for Cricket
+        <Button variant="dark" onClick={approveDai}>
+          Approve Dai for Price Prediction
         </Button>
       </Col>
     </Row>
   );
 };
 
-export default CricketRightColumn;
+export default PricePredictionRight;

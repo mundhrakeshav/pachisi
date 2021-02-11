@@ -30,7 +30,7 @@ const FootBallCard = (props) => {
         <Button
           variant="secondary"
           onClick={() => {
-            const data = prompt("Please enter your name");
+            const data = prompt("Please enter your predicted score");
             console.log(data);
           }}>
           {match["home_team"] + " VS " + match["away_team"]}
@@ -42,7 +42,12 @@ const FootBallCard = (props) => {
         {match["home_full_timeScore"] + " - " + match["away_full_timeScore"]}
         <br />
         <br />
-        <Button variant="secondary">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            const data = prompt("Please enter your predicted score");
+            console.log(data);
+          }}>
           {match["home_team"] + " VS " + match["away_team"]}
         </Button>
         <br />

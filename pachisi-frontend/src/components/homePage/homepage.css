@@ -7,3 +7,7 @@
   padding: 2vh 2vw;
   min-height: 100vh;
 }
+
+.middle-column {
+  background-color: #6c757d;
+}
