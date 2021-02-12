@@ -1,10 +1,10 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
+import { Switch, Route } from "react-router-dom";
 import BasketBall from "./BasketBall/BasketBall";
 import Cricket from "./cricket/cricket";
 import FootBall from "./FootBall/FootBall";
 import SportsLeftColumn from "./sportsLeftColumn/sportsLeftColumn";
-import { Switch, Route } from "react-router-dom";
 import SportsRightColumn from "./sportsRightColumn/sportsRightColumn";
 import "./sports.css";
 const SportsPage = () => {

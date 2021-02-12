@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PlayWithNumbersPage from "./components/playWithNumbers/playWithNumbers";
 import SportsPage from "./components/sport/sports";
 
-import WeatherPage from "./components/weather/weather";
+import Custom from "./components/weather/weather";
 import PricePredictionPage from "./components/price-prediction/pricePrediction";
 import ProviderModal from "./components/ProviderModal/providerModal";
 
@@ -23,7 +23,7 @@ function App() {
           <Route path="/numbers" component={PlayWithNumbersPage} />
           <Route path="/sports" component={SportsPage} />
           <Route path="/prices" component={PricePredictionPage} />
-          <Route path="/weather" component={WeatherPage} />
+          <Route path="/custom" component={Custom} />
 
           {/* 
           <Route path="/researchPaper" component={PapersPage} exact />

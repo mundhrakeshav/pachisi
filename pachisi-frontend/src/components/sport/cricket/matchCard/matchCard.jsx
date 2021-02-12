@@ -18,7 +18,7 @@ const MatchCard = (props) => {
 
   const predictMatch = async (_predictedOutcome) => {
     if (userAddress) {
-      let _betAmount = parseInt(prompt("How much you wanna bet?"));
+      let _betAmount = prompt("How much you wanna bet?");
 
       const _gameStartTime = timestamp.fromDate(
         matchDetails.date.split("T")[0]
