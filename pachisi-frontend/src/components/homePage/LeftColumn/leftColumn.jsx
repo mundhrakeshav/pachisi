@@ -58,7 +58,6 @@ const LeftColumn = () => {
       <br />
       <br />
       <br />
-      <br />
       <Row>
         <Button
           variant="secondary"
