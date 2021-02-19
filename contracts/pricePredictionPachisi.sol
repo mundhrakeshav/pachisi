@@ -1,8 +1,12 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 import "./dai.sol";
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import { EIP712MetaTransaction } from "./EIP712MetaTx.sol";
+import {
+    ISuperToken,
+} from "https://github.com/superfluid-finance/protocol-monorepo/blob/remix-support/packages/ethereum-contracts/contracts/apps/SuperAppBase.sol";
+
 
 contract PricePachisi is EIP712MetaTransaction("PricePachisi", "1") {
 
