@@ -1,6 +1,8 @@
 import React, { createContext, useState } from "react";
 import Web3 from "web3";
 import config from "../config";
+import Portis from "@portis/web3";
+
 import { Biconomy } from "@biconomy/mexa";
 
 export const Web3Context = createContext();
@@ -51,7 +53,15 @@ const Web3ContextProvider = (props) => {
       );
     }
   };
-  const connectPortis = async () => {};
+  const connectPortis = async () => {
+    const portis = new Portis(
+      "e5d192c7-4d3b-4e08-93e3-c5d8ed81d147",
+      "maticMumbai"
+    );
+    const _web3 = new Web3(portis.provider);
+    setWeb3(_web3);
+    setUserAddress(portis.provider.selectedAddress);
+  };
 
   const domainType = [
     { name: "name", type: "string" },

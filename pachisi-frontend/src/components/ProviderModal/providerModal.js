@@ -5,7 +5,7 @@ import { Web3Context } from "../../context/web3Context";
 
 const ProviderModal = () => {
   const { setModalShow, modalShow } = useContext(ProviderModalContext);
-  const { connectMetamask } = useContext(Web3Context);
+  const { connectMetamask, connectPortis } = useContext(Web3Context);
 
   return (
     <Modal
@@ -27,7 +27,12 @@ const ProviderModal = () => {
           MetaMask
         </Button>
 
-        <Button variant="dark" onClick={() => {}}>
+        <Button
+          variant="dark"
+          onClick={() => {
+            setModalShow(false);
+            connectPortis();
+          }}>
           Portis
         </Button>
       </Modal.Footer>
