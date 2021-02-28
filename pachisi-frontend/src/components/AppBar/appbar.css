@@ -1,0 +1,27 @@
+.appbar {
+  background-color: #340068;
+}
+.appbar-brand {
+  font-size: 30px;
+}
+
+.nav-button {
+  text-decoration: none;
+  color: rgb(212, 200, 200);
+}
+.nav-button:hover {
+  text-decoration: none;
+  color: rgb(153, 150, 150);
+}
+
+.connect-wallet-button {
+  background-color: #9933ff;
+
+  padding: 5px 10px;
+  border-radius: 15px;
+}
+
+.nav-item {
+  margin: 7px 10px;
+  color: white;
+}

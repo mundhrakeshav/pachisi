@@ -1,0 +1,24 @@
+.left-column-container {
+  margin-top: 10px;
+  min-height: 89vh;
+  border-right: 1px solid #340068;
+}
+
+.left-button-column {
+  padding-top: 3vh;
+  padding: 3vw;
+}
+
+.left-button-row {
+  padding-top: 3vh;
+}
+
+.left-column-button-pricefeeds {
+  border-radius: 20px;
+  width: 10vw;
+  background-color: #340068;
+}
+
+.left-column-button-pricefeeds:hover {
+  background-color: #290d46;
+}
