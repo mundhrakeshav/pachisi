@@ -9,7 +9,7 @@ const AppBar = () => {
   const { connectMetamask, userAddress } = useContext(Web3Context);
 
   return (
-    <Navbar expand="lg" className="appbar" variant="dark">
+    <Navbar expand="lg" className="appbar" variant="dark" fixed="top">
       <b>
         <Navbar.Brand href="/" className="appbar-brand">
           पचीसी

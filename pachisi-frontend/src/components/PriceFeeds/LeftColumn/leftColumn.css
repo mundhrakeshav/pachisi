@@ -14,9 +14,12 @@
 }
 
 .left-column-button-pricefeeds {
-  border-radius: 20px;
-  width: 10vw;
+  border-radius: 30px;
+  width: 18vw;
+  height: 7vh;
   background-color: #340068;
+  border: 1px solid #340068;
+  box-shadow: 10px 10px 8px #888888;
 }
 
 .left-column-button-pricefeeds:hover {

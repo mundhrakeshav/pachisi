@@ -2,7 +2,9 @@
   background-color: #340068;
 }
 .appbar-brand {
-  font-size: 30px;
+  font-size: 40px;
+  margin: 0;
+  padding: 0 0 0 9vw;
 }
 
 .nav-button {

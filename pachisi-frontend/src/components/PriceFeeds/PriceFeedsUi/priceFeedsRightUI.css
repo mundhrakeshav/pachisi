@@ -1,0 +1,16 @@
+.price-feeds-right-ui-wrapper {
+  margin: 20px;
+}
+
+.price-feeds-card {
+  width: "100%";
+  background-color: #ffffff;
+  height: 30vh;
+  box-shadow: 10px 10px 8px #888888;
+}
+
+#dropdown-basic-button {
+  background-color: #340068;
+  border: 1px solid #340068;
+  box-shadow: 10px 10px 8px #888888;
+}
