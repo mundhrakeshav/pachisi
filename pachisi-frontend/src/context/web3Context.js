@@ -27,6 +27,7 @@ const Web3ContextProvider = (props) => {
       );
     }
   };
+
   return (
     <Web3Context.Provider value={{ userAddress, connectMetamask }}>
       {props.children}

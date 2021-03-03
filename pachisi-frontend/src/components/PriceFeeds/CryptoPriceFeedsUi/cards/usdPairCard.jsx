@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { CryptoPriceFeedsPageContext } from "../../../../context/PriceFeedsPageContext";
+
 import {
   Card,
   Row,
@@ -9,6 +11,7 @@ import {
 } from "react-bootstrap";
 
 const UsdPairCard = () => {
+  const { selectedUSDPairPriceTag } = useContext(CryptoPriceFeedsPageContext);
   return (
     <Row className="price-feeds-right-ui-wrapper">
       <Col>
@@ -24,7 +27,9 @@ const UsdPairCard = () => {
               <Col>
                 <DropDownButtonUsdpair />
               </Col>
-              <Col>{"012 USD"}</Col>
+              <Col>
+                <b>{selectedUSDPairPriceTag + " USD"}</b>
+              </Col>
             </Row>{" "}
             <br />
             <Button variant="primary">Go somewhere</Button>
@@ -36,9 +41,32 @@ const UsdPairCard = () => {
 };
 
 const DropDownButtonUsdpair = () => {
-  return (
-    <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+  const {
+    USDPairAssets,
+    selectedUSDPair,
+    setSelectedUSDPair,
+    changeUSDPair,
+  } = useContext(CryptoPriceFeedsPageContext);
+  const dropDownItemList = USDPairAssets.map((USDPairAsset, index) => {
+    console.log(USDPairAsset);
+
+    return (
       <Dropdown.Item
+        key={index}
+        eventKey={index}
+        onSelect={() => {
+          changeUSDPair(index);
+        }}>
+        {USDPairAsset["name"]}
+      </Dropdown.Item>
+    );
+  });
+
+  return (
+    <DropdownButton
+      id="dropdown-basic-button"
+      title={USDPairAssets[selectedUSDPair]["name"]}>
+      {/* <Dropdown.Item
         eventKey="1"
         onSelect={(eventKey) => {
           console.log(eventKey);
@@ -46,7 +74,9 @@ const DropDownButtonUsdpair = () => {
         Action
       </Dropdown.Item>
       <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> */}
+
+      {dropDownItemList}
     </DropdownButton>
   );
 };
