@@ -25,7 +25,7 @@ const UsdPairCard = () => {
             <Row>
               {" "}
               <Col>
-                <DropDownButtonUsdpair />
+                <DropDownButtonUSDpair />
               </Col>
               <Col>
                 <b>{selectedUSDPairPriceTag + " USD"}</b>
@@ -40,7 +40,7 @@ const UsdPairCard = () => {
   );
 };
 
-const DropDownButtonUsdpair = () => {
+const DropDownButtonUSDpair = () => {
   const {
     USDPairAssets,
     selectedUSDPair,

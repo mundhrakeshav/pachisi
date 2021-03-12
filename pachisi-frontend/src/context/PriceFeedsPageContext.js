@@ -38,8 +38,10 @@ const CryptoPriceFeedsPageContextProvider = (props) => {
   const init = async () => {
     const usdPairPrice = await getUSDPairPrices(USDPairAssets[0]["name"]);
     const ethpairPrice = await getETHPairPrices(ETHPairAssets[0]["name"]);
-    setSelectedUSDPairPriceTag(usdPairPrice);
-    setSelectedETHPairPriceTag(ethpairPrice);
+    setSelectedUSDPairPriceTag(usdPairPrice["USD"]);
+    setSelectedETHPairPriceTag(ethpairPrice["ETH"]);
+    console.log(usdPairPrice);
+    console.log(ethpairPrice);
   };
   useEffect(() => {
     init();
@@ -59,7 +61,7 @@ const CryptoPriceFeedsPageContextProvider = (props) => {
       ETHPairAssets[selectedCurrencyIndex]["name"]
     );
     console.log(newETHPairPrice, "newETHPairPrice");
-    setSelectedETHPairPriceTag(newETHPairPrice);
+    setSelectedETHPairPriceTag(newETHPairPrice["ETH"]);
     setSelectedETHPair(selectedCurrencyIndex);
   };
 
@@ -69,12 +71,11 @@ const CryptoPriceFeedsPageContextProvider = (props) => {
         USDPairAssets,
         ETHPairAssets,
         selectedUSDPair,
-        setSelectedUSDPair,
         selectedETHPair,
-        setSelectedETHPair,
         changeUSDPair,
         changeETHPair,
         selectedUSDPairPriceTag,
+        selectedETHPairPriceTag,
       }}>
       {props.children}
     </CryptoPriceFeedsPageContext.Provider>
