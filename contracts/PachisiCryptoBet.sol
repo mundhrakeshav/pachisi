@@ -3,36 +3,50 @@ pragma solidity ^0.6.7;
 import "https://raw.githubusercontent.com/smartcontractkit/chainlink/develop/evm-contracts/src/v0.6/ChainlinkClient.sol";
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import "./pachisiCryptoPrediction.sol";
+import "./shareToken.sol";
+import "./Ownable.sol";
 
-
-
-contract PachisiCryptoBet is ChainlinkClient {
-       
-       
-    address daiContractAddress = 0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD;
-     
-     
-    bool public betResolved;
-    ERC20 daiContract;
+contract PachisiCryptoBet is ChainlinkClient, Ownable {
+    
+    ShareToken public trueToken;
+    ShareToken public falseToken;
+        
+    uint public totalPriceOfRemainingTokens;
+    
+    bool public betResolved; //If bet has been resolved
     AggregatorV3Interface private priceFeed;
-    uint public betResolveTime;
-    string public betToken;
+    uint public betResolveTime; // Time when bet will be resolved
+    string public betToken; //What token is the bet placed on
+    string public betPair; //ETH or USD
     address public aggregatorAddress;
     address private oracle;
     bytes32 private jobId;
     uint256 private fee;
-    uint public betRange;
-    int public resolvedPrice;
+    int public resolvedPrice; //price during bet resolve time
+    bytes symbol; //greateThan or lessThan
+    uint predictionPrice; //price is greaterThan/lessThan predictionPrice
     
-    constructor(address _aggregatorAddress, uint _betResolveTime, uint _betRange) public {
+    constructor(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, string memory _symbol, uint _predictionPrice) public {
         setPublicChainlinkToken();
         oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b;
         jobId = "982105d690504c5d9ce374d040c08654";
         fee = 0.1 * 10 ** 18; // 0.1 LINK
+        
+        priceFeed = AggregatorV3Interface(_aggregatorAddress);
         betResolved = false;
         betResolveTime = _betResolveTime;
-        priceFeed = AggregatorV3Interface(_aggregatorAddress);
-        betRange = _betRange;
+        betToken = _betToken;
+        betPair = _betPair;
+        
+        trueToken = new ShareToken();
+        falseToken = new ShareToken();
+        trueToken.mint(address(this), 10**30);  //10^12 tokens considering decimal 18
+        falseToken.mint(address(this), 10**30); //10^12 tokens
+        
+        symbol = bytes(_symbol);
+        predictionPrice = _predictionPrice;
+
+        totalPriceOfRemainingTokens = 10**30;
     }
     
     modifier afterBetResolveTime() {
@@ -41,33 +55,31 @@ contract PachisiCryptoBet is ChainlinkClient {
     }
     
     modifier twoDaysBeforeBetResolve() {
-        require(block.timestamp <= betResolveTime + (86400 * 2), "This functionality isn't available in last 2 days of bet.");
+        require(block.timestamp <= betResolveTime - (86400 * 2), "This functionality isn't available in last 2 days of bet.");
         _;
     }
     
-    modifier betNotMadeYet() {
-        require(amountUsersBet[msg.sender] != 0);
-        require(usersBetsLowerLimit[msg.sender] != 0);
-        _;
-    }
-    
-    mapping(address => uint256) amountUsersBet;
-    mapping(address => uint256) usersBetsLowerLimit;
-    
-    function bet(uint _amount, uint _lowerLimit) public betNotMadeYet twoDaysBeforeBetResolve {
+    function bet(uint _amount, bool _userBet, address _userAddress) public twoDaysBeforeBetResolve onlyOwner {
         require(_amount != 0);
-        amountUsersBet[msg.sender] = _amount;
-        usersBetsLowerLimit[msg.sender] = _lowerLimit;
+        ShareToken _shareToken;
+        if(_userBet) {
+            _shareToken = trueToken;
+        } else {
+            _shareToken = falseToken;
+        }
+        uint _sharesLeft = _shareToken.balanceOf(address(this));
+        uint _sharesToBeTransferred = _amount * _sharesLeft/totalPriceOfRemainingTokens;
+        _shareToken.transfer(_userAddress, _sharesToBeTransferred);
     }
     
     
-    function requestAlarmClock(uint256 timeInSeconds) public returns (bytes32 requestId) {
+    function requestAlarmClock(uint256 _betResolveTime) public returns(bytes32 requestId) {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.getPrice.selector);
-        request.addUint("until", block.timestamp + timeInSeconds);
+        request.addUint("until", _betResolveTime);
         return sendChainlinkRequestTo(oracle, request, fee);
     }
     
-     function getPrice(bytes32 _requestId, uint256 _volume) public recordChainlinkFulfillment(_requestId) {
+    function getPrice(bytes32 _requestId, uint256 _volume) public afterBetResolveTime recordChainlinkFulfillment(_requestId) {
         resolvedPrice = getLatestPrice();
         betResolved = true;
     }

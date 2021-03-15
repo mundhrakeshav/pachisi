@@ -2,7 +2,7 @@
 pragma solidity ^0.6.7;
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import "./pachisiCryptoBet.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.4/contracts/token/ERC20/ERC20.sol";
 
 
 
@@ -17,14 +17,27 @@ contract PachisiCryptoPrediction {
     ERC20 linkContract;
 
     
-    mapping(string => address) public USDPairAggregatorAddress;
-    mapping(string => address) public ETHPairAggregatorAddress;
+    mapping(string => address) public USDPairAggregatorAddress; //TokenName => aggregatorAddress
+    mapping(string => address) public ETHPairAggregatorAddress; //TokenName => aggregatorAddress
+    
     mapping(string => mapping (uint => address)) public cryptoBetUSDContractsAddresses; //TokenName => timeResolved => contractAddress
     mapping(string => mapping (uint => address)) public cryptoBetETHContractsAddresses; //TokenName => timeResolved => contractAddress
-    mapping(string => mapping (uint => uint)) public betETHResolvedPrice; //TokenName => timeResolved => priceAtTimeOfBetResolving
-    mapping(string => mapping (uint => uint)) public betUSDResolvedPrice; //TokenName => timeResolved => priceAtTimeOfBetResolving
-    mapping(string => uint) public usdBetRange;
-    mapping(string => uint) public ethBetRange;
+    
+    
+    modifier enoughLinkBalanceOnContract() {
+        require(linkContract.balanceOf(address(this)) >= 10**17, "Not enough Link Balance");
+        _;
+    }
+
+    modifier enoughDaiBalanceWithUser(uint _amount, address _userAddress) {
+        require(daiContract.balanceOf(_userAddress) >= _amount, "Not enough dai balance.");
+        _;
+    }
+    
+    modifier enoughDaiBalanceApproved(uint _amount, address _userAddress) {
+        require(daiContract.allowance(_userAddress, address(this)) >= _amount, "Not enough Dai balance approved.");
+        _;
+    }
     
     constructor() public {
         contractDeployedTimestamp = block.timestamp;
@@ -34,14 +47,11 @@ contract PachisiCryptoPrediction {
 
     }
     
-    
-    function setUSDBetRange(string memory _tokenName, uint _betRange) public {
-        usdBetRange[_tokenName] = _betRange;
+    function pullDai(address _userAddress, uint _amount) public {
+        // address sender, address recipient, uint256 amount
+        daiContract.transferFrom(_userAddress, address(this), _amount);
     }
     
-    function setETHBetRange(string memory _tokenName, uint _betRange) public {
-        ethBetRange[_tokenName] = _betRange;
-    }
     
     function addUSDPairAggregatorAddress(string memory _tokenName, address _aggregatorAddress) public {
         require(USDPairAggregatorAddress[_tokenName] == address(0x0));
@@ -52,44 +62,37 @@ contract PachisiCryptoPrediction {
         require(ETHPairAggregatorAddress[_tokenName] == address(0x0));
         ETHPairAggregatorAddress[_tokenName] = _aggregatorAddress;
     }
-    
-    function usdBet(string memory _tokenName ,uint _betResolveTime, uint _amountToBet) public {
-        if(cryptoBetUSDContractsAddresses[_tokenName][_betResolveTime] == address(0x0)) {
-            makeUSDBet(_tokenName, _betResolveTime);
-        } 
-        placeUSDBet(_tokenName,_betResolveTime);
-    }
-    
-    function ethBet(string memory _tokenName ,uint _betResolveTime, uint _amountToBet) public {
-        if(cryptoBetETHContractsAddresses[_tokenName][_betResolveTime] == address(0x0)){
-            makeETHBet(_tokenName, _betResolveTime);
-        }
-        placeETHBet(_tokenName, _betResolveTime);
-    }
-    
-    //check link balance of this contract
-    function makeUSDBet(string memory _tokenName ,uint _betResolveTime) public {
-        require(cryptoBetUSDContractsAddresses[_tokenName][_betResolveTime] == address(0x0));
-        PachisiCryptoBet _pachisiCryptoBet= new PachisiCryptoBet(USDPairAggregatorAddress[_tokenName], _betResolveTime, usdBetRange[_tokenName]);
+
+    function createUSDBet(uint _betResolveTime, string memory _betToken, string memory _symbol, uint _predictionPrice, uint _initialBetAmount, bool _userBet) public enoughLinkBalanceOnContract {
+        // PachisiCryptoBet(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, string memory _symbol, uint _predictionPrice)
+        PachisiCryptoBet _pachisiCryptoBet = new PachisiCryptoBet(USDPairAggregatorAddress[_betToken], _betResolveTime, "USD", _betToken, _symbol, _predictionPrice);
+        _pachisiCryptoBet.bet(_initialBetAmount, _userBet, msg.sender);
+        linkContract.transfer(address(_pachisiCryptoBet), 10**17);
+        cryptoBetUSDContractsAddresses[_betToken][_betResolveTime] = address(_pachisiCryptoBet);
         _pachisiCryptoBet.requestAlarmClock(_betResolveTime);
-        cryptoBetUSDContractsAddresses[_tokenName][_betResolveTime] = address(_pachisiCryptoBet);
+        pullDai(msg.sender, _initialBetAmount);
     }
     
-    function makeETHBet(string memory _tokenName ,uint _betResolveTime) public {
-        require(cryptoBetETHContractsAddresses[_tokenName][_betResolveTime] == address(0x0));
-        PachisiCryptoBet _pachisiCryptoBet= new PachisiCryptoBet(ETHPairAggregatorAddress[_tokenName], _betResolveTime, ethBetRange[_tokenName]);
+    function createETHBet(uint _betResolveTime, string memory _betToken, string memory _symbol, uint _predictionPrice, uint _initialBetAmount, bool _userBet) public enoughLinkBalanceOnContract {
+        PachisiCryptoBet _pachisiCryptoBet = new PachisiCryptoBet(USDPairAggregatorAddress[_betToken], _betResolveTime, "ETH", _betToken, _symbol, _predictionPrice);
+        _pachisiCryptoBet.bet(_initialBetAmount, _userBet, msg.sender);
+        linkContract.transfer(address(_pachisiCryptoBet), 10**17);
+        cryptoBetUSDContractsAddresses[_betToken][_betResolveTime] = address(_pachisiCryptoBet);
         _pachisiCryptoBet.requestAlarmClock(_betResolveTime);
-        cryptoBetETHContractsAddresses[_tokenName][_betResolveTime] = address(_pachisiCryptoBet);
+        pullDai(msg.sender, _initialBetAmount);
     }
     
-    function placeUSDBet(string memory _tokenName ,uint _betResolveTime) public {
-        
+    function placeUSDBet(uint _betResolveTime, string memory _betToken, uint _betAmount, bool _userBet) public {
+        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(cryptoBetUSDContractsAddresses[_betToken][_betResolveTime]);
+        _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
+        pullDai(msg.sender, _betAmount);
     }
     
-    function placeETHBet(string memory _tokenName ,uint _betResolveTime) public {
-        
+    function placeETHBet(uint _betResolveTime, string memory _betToken, uint _betAmount, bool _userBet) public {
+        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(cryptoBetETHContractsAddresses[_betToken][_betResolveTime]);
+        _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
+        pullDai(msg.sender, _betAmount);
     }
-    
     
     function getLatestPrice(address _aggregatorAddress) public view returns (int) {
         AggregatorV3Interface _priceFeed = AggregatorV3Interface(_aggregatorAddress);
