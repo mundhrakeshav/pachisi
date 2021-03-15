@@ -1,11 +1,11 @@
-.price-feeds-right-ui-wrapper {
-  margin: 20px;
+.price-feeds-card-title,
+.price-feeds-card-subtitle {
+  text-align: left;
 }
 
 .price-feeds-card {
-  width: "100%";
+  width: 100%;
   background-color: #ffffff;
-  height: 30vh;
   box-shadow: 10px 10px 8px #888888;
 }
 
@@ -13,4 +13,13 @@
   background-color: #340068;
   border: 1px solid #340068;
   box-shadow: 5px 5px 10px #888888;
+}
+
+.pair-card-wrapper {
+  padding: 20px;
+  /* max-width: ; */
+}
+
+.date-picker {
+  text-align: left;
 }
