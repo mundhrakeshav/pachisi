@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { CryptoPriceFeedsPageContext } from "../../../../context/PriceFeedsPageContext";
+import { PachisiCryptoPredictionContractContext } from "../../../../context/pachisiCryptoPredictionContract";
 
 import {
   Card,
@@ -14,6 +15,8 @@ import {
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Web3Context } from "../../../../context/web3Context";
+import { DaiContractContext } from "../../../../context/daiContractContext";
 
 const UsdPairCard = () => {
   const {
@@ -21,7 +24,29 @@ const UsdPairCard = () => {
     USDPairAssets,
     selectedUSDPair,
   } = useContext(CryptoPriceFeedsPageContext);
+
+  const { createUSDBet } = useContext(PachisiCryptoPredictionContractContext);
+  const { userAddress, web3 } = useContext(Web3Context);
+  const { approveDaiContract, getAllowance, getBalance } = useContext(
+    DaiContractContext
+  );
+
+  const [selectedSymbol, setSelectedSymbol] = useState("<");
   const [date, setStartDate] = useState(new Date());
+  const [initialBetAmount, setInitialBetAmount] = useState(0);
+  const [predictedPrice, setPredictedPrice] = useState(0);
+
+  const symbols = [">", "<"];
+  const switchSymbol = (index) => {
+    setSelectedSymbol(symbols[index]);
+  };
+
+  //                          (  uint _betResolveTime,
+  //                             string memory _betToken,
+  //                             string memory _symbol,
+  //                             uint _predictionPrice,
+  //                             uint _initialBetAmount,
+  //                             bool _userBet)
 
   return (
     <div className="pair-card-wrapper">
@@ -53,14 +78,20 @@ const UsdPairCard = () => {
                       selected={date}
                       onChange={(_date) => setStartDate(_date)}
                       minDate={new Date()}
+                      showTimeSelect
                       placeholderText="Select a date."
-                      dateFormat="dd/MM/yyyy"
+                      dateFormat="MMMM d, yyyy h:mm aa"
                     />
                     {` is`}
                   </b>
                 </Col>
                 <Col xs="2">
-                  <SymbolDropDown date={date} />
+                  <SymbolDropDown
+                    date={date}
+                    selectedSymbol={selectedSymbol}
+                    switchSymbol={switchSymbol}
+                    symbols={symbols}
+                  />
                 </Col>
                 <Col xs="5">
                   <InputGroup className="mb-3">
@@ -68,6 +99,10 @@ const UsdPairCard = () => {
                       placeholder="Predicted Price"
                       aria-label="Amount (to the nearest dollar)"
                       type="number"
+                      value={predictedPrice}
+                      onChange={(event) => {
+                        setPredictedPrice(event.target.value);
+                      }}
                     />
                     <InputGroup.Append>
                       <InputGroup.Text>USD</InputGroup.Text>
@@ -83,6 +118,10 @@ const UsdPairCard = () => {
                       placeholder="Initial bet should be greater than 20 DAI."
                       aria-label="Amount (to the nearest dollar)"
                       type="number"
+                      value={initialBetAmount}
+                      onChange={(event) => {
+                        setInitialBetAmount(event.target.value);
+                      }}
                     />
                     <InputGroup.Append>
                       <InputGroup.Text>DAI</InputGroup.Text>
@@ -98,6 +137,53 @@ const UsdPairCard = () => {
                       backgroundColor: "#340068",
                       border: "1px solid #340068",
                       boxShadow: "10px 10px 8px #888888",
+                    }}
+                    onClick={async () => {
+                      const agreement = window.confirm(
+                        `You are predicting price of ${USDPairAssets[selectedUSDPair]["name"]} on ${date} to be ${selectedSymbol} ${predictedPrice} and your initial bet is ${initialBetAmount}.`
+                      );
+                      if (agreement) {
+                        const balance = await getBalance(userAddress);
+                        const allowance = await getAllowance(userAddress);
+
+                        console.log(balance);
+                        if (
+                          parseInt(balance) <
+                          parseInt(
+                            web3.utils.toWei(initialBetAmount.toString())
+                          )
+                        ) {
+                          alert(
+                            `Insufficient Balance. Your balance is ${
+                              balance / 10 ** 18
+                            }`
+                          );
+                          return;
+                        }
+
+                        if (
+                          parseInt(allowance) <
+                          parseInt(
+                            web3.utils.toWei(initialBetAmount.toString())
+                          )
+                        ) {
+                          alert(
+                            `Insufficient allowance. Your allowance is ${
+                              allowance / 10 ** 18
+                            }`
+                          );
+                          return;
+                        }
+                        // console.log("done");
+                        createUSDBet(
+                          date.getTime(),
+                          USDPairAssets[selectedUSDPair]["name"],
+                          selectedSymbol,
+                          predictedPrice,
+                          initialBetAmount,
+                          userAddress
+                        );
+                      }
                     }}>
                     Create Market
                   </Button>
@@ -112,16 +198,13 @@ const UsdPairCard = () => {
 };
 
 const SymbolDropDown = (props) => {
-  const [selectedSymbol, setSelectedSymbol] = useState("<");
-  const symbols = [">", "<"];
-
-  const dropDownSymbolList = symbols.map((symbol, index) => {
+  const dropDownSymbolList = props.symbols.map((symbol, index) => {
     return (
       <Dropdown.Item
         key={index}
         eventKey={index}
         onSelect={() => {
-          setSelectedSymbol(symbols[index]);
+          props.switchSymbol(index);
         }}>
         {symbol}
       </Dropdown.Item>
@@ -129,7 +212,7 @@ const SymbolDropDown = (props) => {
   });
 
   return (
-    <DropdownButton id="dropdown-basic-button" title={selectedSymbol}>
+    <DropdownButton id="dropdown-basic-button" title={props.selectedSymbol}>
       {dropDownSymbolList}
     </DropdownButton>
   );

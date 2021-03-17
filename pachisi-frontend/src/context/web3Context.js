@@ -12,11 +12,13 @@ const Web3ContextProvider = (props) => {
       try {
         const provider = window.ethereum;
 
-        await window.ethereum.enable();
         if (!(provider.networkVersion == "42")) {
           alert("Please switch to Kovan Network");
           return;
         }
+        await provider.enable();
+        const _web3 = new Web3(provider);
+        setWeb3(_web3);
         setUserAddress(provider.selectedAddress);
       } catch (error) {
         console.log("Please allow access to connect to web3 ");
@@ -29,7 +31,7 @@ const Web3ContextProvider = (props) => {
   };
 
   return (
-    <Web3Context.Provider value={{ userAddress, connectMetamask }}>
+    <Web3Context.Provider value={{ userAddress, connectMetamask, web3 }}>
       {props.children}
     </Web3Context.Provider>
   );

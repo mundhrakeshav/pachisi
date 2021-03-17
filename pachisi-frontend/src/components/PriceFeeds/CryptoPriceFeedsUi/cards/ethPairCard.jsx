@@ -13,6 +13,8 @@ import {
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { PachisiCryptoPredictionContractContext } from "../../../../context/pachisiCryptoPredictionContract";
+import { Web3Context } from "../../../../context/web3Context";
 
 const EthPairCard = () => {
   const {
@@ -20,7 +22,20 @@ const EthPairCard = () => {
     selectedETHPair,
     selectedETHPairPriceTag,
   } = useContext(CryptoPriceFeedsPageContext);
+
   const [date, setStartDate] = useState(new Date());
+  const [selectedSymbol, setSelectedSymbol] = useState("<");
+  const symbols = [">", "<"];
+  const { userAddress } = useContext(Web3Context);
+
+  const { createETHBet } = useContext(PachisiCryptoPredictionContractContext);
+
+  const [predictedPrice, setPredictedPrice] = useState(0);
+  const [initialBetAmount, setInitialBetAmount] = useState(0);
+
+  const switchSymbol = (index) => {
+    setSelectedSymbol(symbols[index]);
+  };
 
   return (
     <div className="pair-card-wrapper">
@@ -44,7 +59,6 @@ const EthPairCard = () => {
                 </Col>
               </Row>
               <br />
-
               <Row>
                 <Col xs="5" className="date-picker">
                   <b>
@@ -53,14 +67,20 @@ const EthPairCard = () => {
                       selected={date}
                       onChange={(_date) => setStartDate(_date)}
                       minDate={new Date()}
+                      showTimeSelect
                       placeholderText="Select a date."
-                      dateFormat="dd/MM/yyyy"
-                    />{" "}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                    />
                     is
                   </b>
                 </Col>
                 <Col xs="2">
-                  <SymbolDropDown date={date} />
+                  <SymbolDropDown
+                    date={date}
+                    selectedSymbol={selectedSymbol}
+                    switchSymbol={switchSymbol}
+                    symbols={symbols}
+                  />
                 </Col>
                 <Col xs="5">
                   <InputGroup className="mb-3">
@@ -68,6 +88,10 @@ const EthPairCard = () => {
                       placeholder="Predicted Price"
                       aria-label="Amount (to the nearest dollar)"
                       type="number"
+                      value={predictedPrice}
+                      onChange={(event) => {
+                        setPredictedPrice(event.target.value);
+                      }}
                     />
                     <InputGroup.Append>
                       <InputGroup.Text>ETH</InputGroup.Text>
@@ -83,6 +107,10 @@ const EthPairCard = () => {
                       placeholder="Initial bet should be greater than 20 DAI."
                       aria-label="Amount (to the nearest dollar)"
                       type="number"
+                      value={initialBetAmount}
+                      onChange={(event) => {
+                        setInitialBetAmount(event.target.value);
+                      }}
                     />
                     <InputGroup.Append>
                       <InputGroup.Text>DAI</InputGroup.Text>
@@ -98,6 +126,22 @@ const EthPairCard = () => {
                       backgroundColor: "#340068",
                       border: "1px solid #340068",
                       boxShadow: "10px 10px 8px #888888",
+                    }}
+                    onClick={() => {
+                      const agreement = window.confirm(
+                        `You are predicting price of ${ETHPairAssets[selectedETHPair]["name"]} on ${date} to be ${selectedSymbol} ${predictedPrice} and your initial bet is ${initialBetAmount}.`
+                      );
+                      console.log(agreement);
+                      if (agreement) {
+                        createETHBet(
+                          date.getTime(),
+                          ETHPairAssets[selectedETHPair]["name"],
+                          selectedSymbol,
+                          predictedPrice,
+                          initialBetAmount,
+                          userAddress
+                        );
+                      }
                     }}>
                     Create Market
                   </Button>
@@ -110,18 +154,14 @@ const EthPairCard = () => {
     </div>
   );
 };
-
 const SymbolDropDown = (props) => {
-  const [selectedSymbol, setSelectedSymbol] = useState("<");
-  const symbols = [">", "<"];
-
-  const dropDownSymbolList = symbols.map((symbol, index) => {
+  const dropDownSymbolList = props.symbols.map((symbol, index) => {
     return (
       <Dropdown.Item
         key={index}
         eventKey={index}
         onSelect={() => {
-          setSelectedSymbol(symbols[index]);
+          props.switchSymbol(index);
         }}>
         {symbol}
       </Dropdown.Item>
@@ -129,12 +169,11 @@ const SymbolDropDown = (props) => {
   });
 
   return (
-    <DropdownButton id="dropdown-basic-button" title={selectedSymbol}>
+    <DropdownButton id="dropdown-basic-button" title={props.selectedSymbol}>
       {dropDownSymbolList}
     </DropdownButton>
   );
 };
-
 const DropDownButtonETHpair = () => {
   const { ETHPairAssets, selectedETHPair, changeETHPair } = useContext(
     CryptoPriceFeedsPageContext

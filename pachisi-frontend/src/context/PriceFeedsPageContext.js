@@ -5,30 +5,30 @@ export const CryptoPriceFeedsPageContext = createContext();
 const CryptoPriceFeedsPageContextProvider = (props) => {
   const USDPairAssets = [
     //betRange In USD
-    { name: "BAT", betRange: 2.0 },
-    { name: "BNB", betRange: 2.0 },
-    { name: "BTC", betRange: 2.0 },
-    { name: "ETH", betRange: 2.0 },
-    { name: "LTC", betRange: 2.0 },
-    { name: "SNX", betRange: 2.0 },
-    { name: "TRX", betRange: 2.0 },
-    { name: "XRP", betRange: 2.0 },
-    { name: "XTZ", betRange: 2.0 },
+    { name: "BAT" },
+    { name: "BNB" },
+    { name: "BTC" },
+    { name: "ETH" },
+    { name: "LTC" },
+    { name: "SNX" },
+    { name: "TRX" },
+    { name: "XRP" },
+    { name: "XTZ" },
   ];
 
   const ETHPairAssets = [
     // betRange in ETH
-    { name: "AAVE", betRange: 0.001 },
-    { name: "BAT", betRange: 0.001 },
-    { name: "BTC", betRange: 0.001 },
-    { name: "LINK", betRange: 0.001 },
-    { name: "MANA", betRange: 0.001 },
-    { name: "MKR", betRange: 0.001 },
-    { name: "REN", betRange: 0.001 },
-    { name: "REP", betRange: 0.001 },
-    { name: "SNX", betRange: 0.001 },
-    { name: "UNI", betRange: 0.001 },
-    { name: "YFI", betRange: 0.001 },
+    { name: "AAVE" },
+    { name: "BAT" },
+    { name: "BTC" },
+    { name: "LINK" },
+    { name: "MANA" },
+    { name: "MKR" },
+    { name: "REN" },
+    { name: "REP" },
+    { name: "SNX" },
+    { name: "UNI" },
+    { name: "YFI" },
   ];
   const [selectedUSDPair, setSelectedUSDPair] = useState(0);
   const [selectedETHPair, setSelectedETHPair] = useState(0);

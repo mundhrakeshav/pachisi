@@ -23,3 +23,13 @@
 .date-picker {
   text-align: left;
 }
+.approve-dai-card-wrapper {
+  margin: 20px;
+  padding: 0;
+}
+
+.approve-dai-card {
+  margin: 0;
+  padding: 20px;
+  text-align: right;
+}
