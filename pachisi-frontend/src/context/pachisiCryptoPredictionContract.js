@@ -42,16 +42,16 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
       web3.utils.toWei(_initialBetAmount),
       _userAddress
     );
-    // pachisiCryptoPredictionContract.methods
-    //   .createUSDBet(
-    //     _betResolveTime,
-    //     _betToken,
-    //     _symbol,
-    //     web3.utils.toWei(_predictionPrice) / 10 ** 10,
-    //     web3.utils.toWei(_initialBetAmount),
-    //     true
-    //   )
-    //   .send({ from: _userAddress });
+    pachisiCryptoPredictionContract.methods
+      .createUSDBet(
+        _betResolveTime,
+        _betToken,
+        _symbol,
+        web3.utils.toWei(_predictionPrice) / 10 ** 10,
+        web3.utils.toWei(_initialBetAmount),
+        true
+      )
+      .send({ from: _userAddress });
   };
 
   const createETHBet = async (

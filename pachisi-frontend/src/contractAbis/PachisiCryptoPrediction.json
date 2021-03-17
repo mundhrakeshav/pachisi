@@ -1,48 +1,5 @@
 [
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "name": "ETHPairAggregatorAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "name": "USDPairAggregatorAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "string",
@@ -157,17 +114,85 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "_betAddress",
+        "type": "address"
+      },
+      {
         "internalType": "string",
-        "name": "",
+        "name": "_betToken",
         "type": "string"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "_betAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_userBet",
+        "type": "bool"
+      }
+    ],
+    "name": "placeETHBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_betAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_betToken",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_userBet",
+        "type": "bool"
+      }
+    ],
+    "name": "placeUSDBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
-    "name": "cryptoBetETHContractsAddresses",
+    "name": "pullDai",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "daiContractAddress",
     "outputs": [
       {
         "internalType": "address",
@@ -184,27 +209,9 @@
         "internalType": "string",
         "name": "",
         "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
-    "name": "cryptoBetUSDContractsAddresses",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "daiContractAddress",
+    "name": "ETHPairAggregatorAddress",
     "outputs": [
       {
         "internalType": "address",
@@ -250,75 +257,68 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_betResolveTime",
-        "type": "uint256"
-      },
-      {
         "internalType": "string",
-        "name": "_betToken",
+        "name": "",
         "type": "string"
       },
       {
         "internalType": "uint256",
-        "name": "_betAmount",
+        "name": "",
         "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_userBet",
-        "type": "bool"
       }
     ],
-    "name": "placeETHBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_betResolveTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_betToken",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_betAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_userBet",
-        "type": "bool"
-      }
-    ],
-    "name": "placeUSDBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "tokenETHBetAddresses",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "_userAddress",
+        "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       },
       {
         "internalType": "uint256",
-        "name": "_amount",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "pullDai",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "tokenUSDBetAddresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "USDPairAggregatorAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -342,9 +342,9 @@
     "name": "userBetsETH",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -371,9 +371,9 @@
     "name": "userBetsUSD",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
