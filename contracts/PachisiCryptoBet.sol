@@ -23,10 +23,13 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
     bytes32 private jobId;
     uint256 private fee;
     int public resolvedPrice; //price during bet resolve time
-    bytes symbol; //greateThan or lessThan
-    uint predictionPrice; //price is greaterThan/lessThan predictionPrice
+    bytes public symbol; //greateThan or lessThan
+    uint public predictionPrice; //price is greaterThan/lessThan predictionPrice
     
-    constructor(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, string memory _symbol, uint _predictionPrice) public {
+    mapping (address => bool) hasUserClaimed; // Will be turned to true after user has claimed the rewards
+    
+    
+    constructor(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, uint _predictionPrice, string memory _betSymbol) public {
         setPublicChainlinkToken();
         oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b;
         jobId = "982105d690504c5d9ce374d040c08654";
@@ -37,13 +40,12 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         betResolveTime = _betResolveTime;
         betToken = _betToken;
         betPair = _betPair;
-        
         trueToken = new ShareToken();
         falseToken = new ShareToken();
         trueToken.mint(address(this), 10**30);  //10^12 tokens considering decimal 18
         falseToken.mint(address(this), 10**30); //10^12 tokens
         
-        symbol = bytes(_symbol);
+        symbol = bytes(_betSymbol);
         predictionPrice = _predictionPrice;
 
         totalPriceOfRemainingTokens = 10**30;
@@ -59,7 +61,9 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         _;
     }
     
-    function bet(uint _amount, bool _userBet, address _userAddress) public twoDaysBeforeBetResolve onlyOwner {
+    function bet(uint _amount, bool _userBet, address _userAddress) public 
+                                                                    // twoDaysBeforeBetResolve 
+                                                                    onlyOwner {
         require(_amount != 0);
         ShareToken _shareToken;
         if(_userBet) {

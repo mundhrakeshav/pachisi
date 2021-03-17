@@ -11,8 +11,6 @@ contract PachisiCryptoPrediction {
     address public daiContractAddress = 0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD;
     address public linkContractAddress = 0xa36085F69e2889c224210F603D836748e7dC0088;
     
-    uint public contractDeployedTimestamp;
-    uint public intervalTime;
     ERC20 daiContract;
     ERC20 linkContract;
 
@@ -20,8 +18,15 @@ contract PachisiCryptoPrediction {
     mapping(string => address) public USDPairAggregatorAddress; //TokenName => aggregatorAddress
     mapping(string => address) public ETHPairAggregatorAddress; //TokenName => aggregatorAddress
     
-    mapping(string => mapping (uint => address)) public cryptoBetUSDContractsAddresses; //TokenName => timeResolved => contractAddress
-    mapping(string => mapping (uint => address)) public cryptoBetETHContractsAddresses; //TokenName => timeResolved => contractAddress
+    // mapping(string => mapping (uint => address)) public cryptoBetUSDContractsAddresses; //TokenName => timeResolved => contractAddress
+    // mapping(string => mapping (uint => address)) public cryptoBetETHContractsAddresses; //TokenName => timeResolved => contractAddress
+    
+    mapping(string => address[]) public tokenUSDBetAddresses;
+    mapping(string => address[]) public tokenETHBetAddresses;
+    
+    //TODO
+    mapping(address => mapping(string => address[])) public userBetsUSD;
+    mapping(address => mapping(string => address[])) public userBetsETH;
     
     
     modifier enoughLinkBalanceOnContract() {
@@ -40,8 +45,6 @@ contract PachisiCryptoPrediction {
     }
     
     constructor() public {
-        contractDeployedTimestamp = block.timestamp;
-        intervalTime = 604800;
         daiContract = ERC20(daiContractAddress);
         linkContract = ERC20(linkContractAddress);
 
@@ -52,6 +55,13 @@ contract PachisiCryptoPrediction {
         daiContract.transferFrom(_userAddress, address(this), _amount);
     }
     
+    function getUSDBets(string memory _tokenName) public view returns(address[] memory){
+        return tokenUSDBetAddresses[_tokenName];
+    }
+    
+    function getETHBets(string memory _tokenName) public view returns(address[] memory){
+        return tokenETHBetAddresses[_tokenName];
+    }
     
     function addUSDPairAggregatorAddress(string memory _tokenName, address _aggregatorAddress) public {
         require(USDPairAggregatorAddress[_tokenName] == address(0x0));
@@ -63,34 +73,49 @@ contract PachisiCryptoPrediction {
         ETHPairAggregatorAddress[_tokenName] = _aggregatorAddress;
     }
 
-    function createUSDBet(uint _betResolveTime, string memory _betToken, string memory _symbol, uint _predictionPrice, uint _initialBetAmount, bool _userBet) public enoughLinkBalanceOnContract {
-        // PachisiCryptoBet(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, string memory _symbol, uint _predictionPrice)
-        PachisiCryptoBet _pachisiCryptoBet = new PachisiCryptoBet(USDPairAggregatorAddress[_betToken], _betResolveTime, "USD", _betToken, _symbol, _predictionPrice);
+    function createUSDBet(  uint _betResolveTime, 
+                            string memory _betToken, 
+                            string memory _symbol, 
+                            uint _predictionPrice, 
+                            uint _initialBetAmount, 
+                            bool _userBet) public enoughLinkBalanceOnContract {
+        
+        // PachisiCryptoBet(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, uint _predictionPrice, string memory _betSymbol)
+        require(USDPairAggregatorAddress[_betToken] != address(0x0));
+        PachisiCryptoBet _pachisiCryptoBet = new PachisiCryptoBet(USDPairAggregatorAddress[_betToken], _betResolveTime, "USD", _betToken, _predictionPrice, _symbol);
         _pachisiCryptoBet.bet(_initialBetAmount, _userBet, msg.sender);
         linkContract.transfer(address(_pachisiCryptoBet), 10**17);
-        cryptoBetUSDContractsAddresses[_betToken][_betResolveTime] = address(_pachisiCryptoBet);
+        tokenUSDBetAddresses[_betToken].push(address(_pachisiCryptoBet));
         _pachisiCryptoBet.requestAlarmClock(_betResolveTime);
         pullDai(msg.sender, _initialBetAmount);
     }
     
-    function createETHBet(uint _betResolveTime, string memory _betToken, string memory _symbol, uint _predictionPrice, uint _initialBetAmount, bool _userBet) public enoughLinkBalanceOnContract {
-        PachisiCryptoBet _pachisiCryptoBet = new PachisiCryptoBet(USDPairAggregatorAddress[_betToken], _betResolveTime, "ETH", _betToken, _symbol, _predictionPrice);
+    function createETHBet(  uint _betResolveTime, 
+                            string memory _betToken, 
+                            string memory _symbol, 
+                            uint _predictionPrice, 
+                            uint _initialBetAmount, 
+                            bool _userBet) public enoughLinkBalanceOnContract {
+        require(ETHPairAggregatorAddress[_betToken] != address(0x0));
+        PachisiCryptoBet _pachisiCryptoBet = new PachisiCryptoBet(ETHPairAggregatorAddress[_betToken], _betResolveTime, "ETH", _betToken, _predictionPrice, _symbol);
         _pachisiCryptoBet.bet(_initialBetAmount, _userBet, msg.sender);
         linkContract.transfer(address(_pachisiCryptoBet), 10**17);
-        cryptoBetUSDContractsAddresses[_betToken][_betResolveTime] = address(_pachisiCryptoBet);
+        tokenETHBetAddresses[_betToken].push(address(_pachisiCryptoBet));
         _pachisiCryptoBet.requestAlarmClock(_betResolveTime);
         pullDai(msg.sender, _initialBetAmount);
     }
     
-    function placeUSDBet(uint _betResolveTime, string memory _betToken, uint _betAmount, bool _userBet) public {
-        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(cryptoBetUSDContractsAddresses[_betToken][_betResolveTime]);
+    function placeUSDBet(address _betAddress, string memory _betToken, uint _betAmount, bool _userBet) public {
+        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(_betAddress);
         _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
+        userBetsUSD[msg.sender][_betToken].push(_betAddress);
         pullDai(msg.sender, _betAmount);
     }
     
-    function placeETHBet(uint _betResolveTime, string memory _betToken, uint _betAmount, bool _userBet) public {
-        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(cryptoBetETHContractsAddresses[_betToken][_betResolveTime]);
+    function placeETHBet(address _betAddress , string memory _betToken, uint _betAmount, bool _userBet) public {
+        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(_betAddress);
         _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
+        userBetsETH[msg.sender][_betToken].push(_betAddress);
         pullDai(msg.sender, _betAmount);
     }
     
