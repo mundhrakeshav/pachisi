@@ -35,16 +35,17 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
     _userAddress
   ) => {
     console.log(
-      _betResolveTime,
+      parseInt(_betResolveTime / 1000),
       _betToken,
       _symbol,
       web3.utils.toWei(_predictionPrice) / 10 ** 10,
       web3.utils.toWei(_initialBetAmount),
       _userAddress
     );
+
     pachisiCryptoPredictionContract.methods
       .createUSDBet(
-        _betResolveTime,
+        parseInt(_betResolveTime / 1000),
         _betToken,
         _symbol,
         web3.utils.toWei(_predictionPrice) / 10 ** 10,
@@ -63,16 +64,17 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
     _userAddress
   ) => {
     console.log(
-      _betResolveTime,
+      parseInt(_betResolveTime / 1000),
       _betToken,
       _symbol,
       web3.utils.toWei(_predictionPrice),
       web3.utils.toWei(_initialBetAmount),
       _userAddress
     );
+
     pachisiCryptoPredictionContract.methods
       .createETHBet(
-        _betResolveTime,
+        parseInt(_betResolveTime / 1000),
         _betToken,
         _symbol,
         web3.utils.toWei(_predictionPrice),
@@ -80,17 +82,35 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
         true
       )
       .send({ from: _userAddress });
-    //                          uint _betResolveTime,
-    //                         string memory _betToken,
-    //                         string memory _symbol,
-    //                         uint _predictionPrice,
-    //                         uint _initialBetAmount,
-    //                         bool _userBet
+  };
+
+  const getUSDTokenBetsAddresses = async () => {
+    const _web3 = new Web3(window.ethereum);
+    const _contract = new _web3.eth.Contract(
+      pachisiCryptoPredictionAbi,
+      config.pachisiCryptoPredictionContractAddress
+    );
+    const addresses = await _contract.methods.getUSDBets().call();
+    return addresses;
+  };
+  const getETHTokenBetsAddresses = async () => {
+    const _web3 = new Web3(window.ethereum);
+    const _contract = new _web3.eth.Contract(
+      pachisiCryptoPredictionAbi,
+      config.pachisiCryptoPredictionContractAddress
+    );
+    const addresses = await _contract.methods.getETHBets().call();
+    return addresses;
   };
 
   return (
     <PachisiCryptoPredictionContractContext.Provider
-      value={{ createUSDBet, createETHBet }}>
+      value={{
+        createUSDBet,
+        createETHBet,
+        getUSDTokenBetsAddresses,
+        getETHTokenBetsAddresses,
+      }}>
       {props.children}
     </PachisiCryptoPredictionContractContext.Provider>
   );

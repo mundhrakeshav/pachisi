@@ -7,19 +7,24 @@ import PachisiCryptoPredictionContractContextProvider from "../../../context/pac
 import ApproveDaiCard from "./approveDaiComponent";
 import "./priceFeedsUI.css";
 import DaiContractContextProvider from "../../../context/daiContractContext";
+import BetList from "./BetList/betList";
+import PachisiCryptoBetProvider from "../../../context/pachisiCryptoBetContext";
 
 const CryptoPriceFeedsRightUI = () => {
   return (
     <div>
-      <DaiContractContextProvider>
-        <CryptoPriceFeedsPageContextProvider>
-          <PachisiCryptoPredictionContractContextProvider>
-            <ApproveDaiCard />
-            <UsdPairCard />
-            <EthPairCard />
-          </PachisiCryptoPredictionContractContextProvider>
-        </CryptoPriceFeedsPageContextProvider>
-      </DaiContractContextProvider>
+      <PachisiCryptoBetProvider>
+        <DaiContractContextProvider>
+          <CryptoPriceFeedsPageContextProvider>
+            <PachisiCryptoPredictionContractContextProvider>
+              <ApproveDaiCard />
+              <UsdPairCard />
+              <EthPairCard />
+              <BetList />
+            </PachisiCryptoPredictionContractContextProvider>
+          </CryptoPriceFeedsPageContextProvider>
+        </DaiContractContextProvider>
+      </PachisiCryptoBetProvider>
     </div>
   );
 };

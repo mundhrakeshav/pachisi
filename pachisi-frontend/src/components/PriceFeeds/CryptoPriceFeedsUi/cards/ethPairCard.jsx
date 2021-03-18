@@ -71,7 +71,7 @@ const EthPairCard = () => {
                       placeholderText="Select a date."
                       dateFormat="MMMM d, yyyy h:mm aa"
                     />
-                    is
+                    {" is"}
                   </b>
                 </Col>
                 <Col xs="2">
@@ -134,7 +134,7 @@ const EthPairCard = () => {
                       console.log(agreement);
                       if (agreement) {
                         createETHBet(
-                          date.getTime(),
+                          date.getTime() / 1000,
                           ETHPairAssets[selectedETHPair]["name"],
                           selectedSymbol,
                           predictedPrice,

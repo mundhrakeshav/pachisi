@@ -223,6 +223,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getETHBets",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -236,6 +249,19 @@
         "internalType": "int256",
         "name": "",
         "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUSDBets",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -257,11 +283,6 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
-      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -280,11 +301,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
       {
         "internalType": "uint256",
         "name": "",

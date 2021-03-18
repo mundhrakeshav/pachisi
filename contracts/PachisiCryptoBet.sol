@@ -2,7 +2,7 @@
 pragma solidity ^0.6.7;
 import "https://raw.githubusercontent.com/smartcontractkit/chainlink/develop/evm-contracts/src/v0.6/ChainlinkClient.sol";
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-import "./pachisiCryptoPrediction.sol";
+import "./pachisiCryptoBetPrediction.sol";
 import "./shareToken.sol";
 import "./Ownable.sol";
 
@@ -26,7 +26,7 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
     bytes public symbol; //greateThan or lessThan
     uint public predictionPrice; //price is greaterThan/lessThan predictionPrice
     
-    mapping (address => bool) hasUserClaimed; // Will be turned to true after user has claimed the rewards
+    mapping (address => bool) public hasUserClaimed; // Will be turned to true after user has claimed the rewards
     
     
     constructor(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, uint _predictionPrice, string memory _betSymbol) public {
@@ -98,5 +98,5 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         ) = priceFeed.latestRoundData();
         return price;
     }
-    
+    // 0x5cd1C439c64c0c5A9bab2E9B028c9cF0E9BE4Fc8,0x2E7b40B1137D28Df39753d4Da09D66328E45e7cC
 }  

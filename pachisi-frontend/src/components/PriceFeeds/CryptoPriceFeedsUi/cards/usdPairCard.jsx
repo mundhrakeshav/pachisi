@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { CryptoPriceFeedsPageContext } from "../../../../context/PriceFeedsPageContext";
 import { PachisiCryptoPredictionContractContext } from "../../../../context/pachisiCryptoPredictionContract";
+import { Web3Context } from "../../../../context/web3Context";
+import { DaiContractContext } from "../../../../context/daiContractContext";
+import DatePicker from "react-datepicker";
 
 import {
   Card,
@@ -13,10 +16,7 @@ import {
   FormControl,
 } from "react-bootstrap";
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Web3Context } from "../../../../context/web3Context";
-import { DaiContractContext } from "../../../../context/daiContractContext";
 
 const UsdPairCard = () => {
   const {
@@ -40,13 +40,6 @@ const UsdPairCard = () => {
   const switchSymbol = (index) => {
     setSelectedSymbol(symbols[index]);
   };
-
-  //                          (  uint _betResolveTime,
-  //                             string memory _betToken,
-  //                             string memory _symbol,
-  //                             uint _predictionPrice,
-  //                             uint _initialBetAmount,
-  //                             bool _userBet)
 
   return (
     <div className="pair-card-wrapper">
