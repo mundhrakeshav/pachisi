@@ -2,7 +2,7 @@
 pragma solidity ^0.6.7;
 import "https://raw.githubusercontent.com/smartcontractkit/chainlink/develop/evm-contracts/src/v0.6/ChainlinkClient.sol";
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-import "./pachisiCryptoBetPrediction.sol";
+import "./pachisiCryptoPrediction.sol";
 import "./shareToken.sol";
 import "./Ownable.sol";
 
@@ -25,7 +25,12 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
     int public resolvedPrice; //price during bet resolve time
     bytes public symbol; //greateThan or lessThan
     uint public predictionPrice; //price is greaterThan/lessThan predictionPrice
+    uint public volume;
+    uint public trueTokensInMarket;
+    uint public falseTokensInMarket;
     
+    mapping (address => uint) public userOwnedTrueTokens;
+    mapping (address => uint) public userOwnedFalseTokens;
     mapping (address => bool) public hasUserClaimed; // Will be turned to true after user has claimed the rewards
     
     
@@ -73,9 +78,15 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         }
         uint _sharesLeft = _shareToken.balanceOf(address(this));
         uint _sharesToBeTransferred = _amount * _sharesLeft/totalPriceOfRemainingTokens;
+        volume += _amount;
+        _userBet ? userOwnedTrueTokens[_userAddress] += _sharesToBeTransferred : userOwnedFalseTokens[_userAddress] += _sharesToBeTransferred;
+        _userBet ? trueTokensInMarket += _sharesToBeTransferred : falseTokensInMarket += _sharesToBeTransferred;
         _shareToken.transfer(_userAddress, _sharesToBeTransferred);
     }
     
+    function claimFunds() public {
+        
+    }
     
     function requestAlarmClock(uint256 _betResolveTime) public returns(bytes32 requestId) {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.getPrice.selector);
@@ -98,5 +109,5 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         ) = priceFeed.latestRoundData();
         return price;
     }
-    // 0x5cd1C439c64c0c5A9bab2E9B028c9cF0E9BE4Fc8,0x2E7b40B1137D28Df39753d4Da09D66328E45e7cC
+    
 }  
