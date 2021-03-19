@@ -103,6 +103,59 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
     return addresses;
   };
 
+  const placeUSDBets = (
+    _betAddress,
+    _betToken,
+    _betAmount,
+    _userBet,
+    _userAddress
+  ) => {
+    const _web3 = new Web3(window.ethereum);
+    console.log(
+      _betAddress,
+      _betToken,
+      _betAmount,
+      _userBet,
+      "USD",
+      _userAddress
+    );
+    pachisiCryptoPredictionContract.methods
+      .placeUSDBet(
+        _betAddress,
+        _betToken,
+        _web3.utils.toWei(_betAmount.toString()),
+        _userBet
+      )
+      .send({ from: _userAddress });
+  };
+
+  const placeETHBets = (
+    _betAddress,
+    _betToken,
+    _betAmount,
+    _userBet,
+    _userAddress
+  ) => {
+    const _web3 = new Web3(window.ethereum);
+
+    console.log(
+      _betAddress,
+      _betToken,
+      _betAmount,
+      _userBet,
+      "ETH",
+      _userAddress
+    );
+    pachisiCryptoPredictionContract.methods
+      .placeETHBet(
+        _betAddress,
+        _betToken,
+        _web3.utils.toWei(_betAmount.toString()),
+        _userBet
+      )
+      .send({ from: _userAddress });
+  };
+
   return (
     <PachisiCryptoPredictionContractContext.Provider
       value={{
@@ -110,6 +163,8 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
         createETHBet,
         getUSDTokenBetsAddresses,
         getETHTokenBetsAddresses,
+        placeUSDBets,
+        placeETHBets,
       }}>
       {props.children}
     </PachisiCryptoPredictionContractContext.Provider>

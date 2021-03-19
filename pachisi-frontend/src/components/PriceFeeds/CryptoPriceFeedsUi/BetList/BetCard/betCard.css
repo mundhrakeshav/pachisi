@@ -1,6 +1,5 @@
 .bet-card-wrapper {
   margin: 10px;
-  text-align: left;
 }
 
 .bet-card {
@@ -14,4 +13,12 @@
 .claim-funds-button {
   width: 80%;
   align-self: center;
+}
+
+.bet-card-left-column {
+  text-align: left;
+}
+
+.bet-card-right-column {
+  text-align: right;
 }

@@ -15,6 +15,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { PachisiCryptoPredictionContractContext } from "../../../../context/pachisiCryptoPredictionContract";
 import { Web3Context } from "../../../../context/web3Context";
+import { DaiContractContext } from "../../../../context/daiContractContext";
 
 const EthPairCard = () => {
   const {
@@ -26,8 +27,10 @@ const EthPairCard = () => {
   const [date, setStartDate] = useState(new Date());
   const [selectedSymbol, setSelectedSymbol] = useState("<");
   const symbols = [">", "<"];
-  const { userAddress } = useContext(Web3Context);
-
+  const { userAddress, web3 } = useContext(Web3Context);
+  const { approveDaiContract, getAllowance, getBalance } = useContext(
+    DaiContractContext
+  );
   const { createETHBet } = useContext(PachisiCryptoPredictionContractContext);
 
   const [predictedPrice, setPredictedPrice] = useState(0);
@@ -62,7 +65,7 @@ const EthPairCard = () => {
               <Row>
                 <Col xs="5" className="date-picker">
                   <b>
-                    {`Price of ${ETHPairAssets[selectedETHPair]["name"]} on`}
+                    {`Price of ${ETHPairAssets[selectedETHPair]["name"]} on `}
                     <DatePicker
                       selected={date}
                       onChange={(_date) => setStartDate(_date)}
@@ -127,14 +130,51 @@ const EthPairCard = () => {
                       border: "1px solid #340068",
                       boxShadow: "10px 10px 8px #888888",
                     }}
-                    onClick={() => {
+                    onClick={async () => {
+                      if (!userAddress) {
+                        alert("Please allow web3 access");
+                        return;
+                      }
                       const agreement = window.confirm(
                         `You are predicting price of ${ETHPairAssets[selectedETHPair]["name"]} on ${date} to be ${selectedSymbol} ${predictedPrice} and your initial bet is ${initialBetAmount}.`
                       );
                       console.log(agreement);
+
                       if (agreement) {
+                        const balance = await getBalance(userAddress);
+                        const allowance = await getAllowance(userAddress);
+
+                        console.log(balance);
+                        if (
+                          parseInt(balance) <
+                          parseInt(
+                            web3.utils.toWei(initialBetAmount.toString())
+                          )
+                        ) {
+                          alert(
+                            `Insufficient Balance. Your balance is ${
+                              balance / 10 ** 18
+                            }`
+                          );
+                          return;
+                        }
+
+                        if (
+                          parseInt(allowance) <
+                          parseInt(
+                            web3.utils.toWei(initialBetAmount.toString())
+                          )
+                        ) {
+                          alert(
+                            `Insufficient allowance. Your allowance is ${
+                              allowance / 10 ** 18
+                            }`
+                          );
+                          return;
+                        }
+
                         createETHBet(
-                          date.getTime() / 1000,
+                          date.getTime(),
                           ETHPairAssets[selectedETHPair]["name"],
                           selectedSymbol,
                           predictedPrice,

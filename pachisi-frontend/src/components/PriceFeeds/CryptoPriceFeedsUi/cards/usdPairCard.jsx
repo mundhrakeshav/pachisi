@@ -132,6 +132,11 @@ const UsdPairCard = () => {
                       boxShadow: "10px 10px 8px #888888",
                     }}
                     onClick={async () => {
+                      if (!userAddress) {
+                        alert("Please allow web3 access");
+                        return;
+                      }
+
                       const agreement = window.confirm(
                         `You are predicting price of ${USDPairAssets[selectedUSDPair]["name"]} on ${date} to be ${selectedSymbol} ${predictedPrice} and your initial bet is ${initialBetAmount}.`
                       );
