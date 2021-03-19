@@ -34,7 +34,7 @@ const BetCards = (props) => {
 const BetCard = (props) => {
   const { getData } = useContext(PachisiCryptoBetContext);
   const { userAddress } = useContext(Web3Context);
-  const { placeUSDBets, placeETHBets } = useContext(
+  const { placeUSDBets, placeETHBets, claimFunds } = useContext(
     PachisiCryptoPredictionContractContext
   );
 
@@ -65,6 +65,10 @@ const BetCard = (props) => {
     } else {
       placeETHBets(props.address, betToken, _betAmount, _userBet, userAddress);
     }
+  };
+
+  const claim = () => {
+    claimFunds(props.address, userAddress);
   };
 
   const init = async () => {
@@ -130,7 +134,7 @@ const BetCard = (props) => {
               <Card.Subtitle>
                 <h6>
                   Volume:
-                  <b>{` ${volume / 10 ** 18}`}</b>
+                  <b>{` ${volume / 10 ** 18} DAI`}</b>
                 </h6>
               </Card.Subtitle>
             </Col>
@@ -150,7 +154,7 @@ const BetCard = (props) => {
             </Col>
           </Row>
           {betResolved ? (
-            <ClaimTokensButton hasUserClaimed={hasUserClaimed} />
+            <ClaimTokensButton hasUserClaimed={hasUserClaimed} claim={claim} />
           ) : (
             <PlaceBetButtonGroup
               placeBetCallBack={placeBet}
@@ -200,13 +204,12 @@ const PlaceBetButtonGroup = (props) => {
         }}>
         <b>
           Yes
-          {` ${
+          {` (${
             props.trueTokensInMarket /
             10 ** 18 /
             (props.trueTokensInMarket / 10 ** 18 +
               props.falseTokensInMarket / 10 ** 18)
-          }`}
-          {" DAI"}
+          } DAI)`}
         </b>
       </Button>
       <Form>
@@ -229,13 +232,12 @@ const PlaceBetButtonGroup = (props) => {
         }}>
         <b>
           No
-          {` ${
+          {` (${
             props.falseTokensInMarket /
             10 ** 18 /
             (props.trueTokensInMarket / 10 ** 18 +
               props.falseTokensInMarket / 10 ** 18)
-          }`}
-          {" DAI"}
+          } DAI)`}
         </b>
       </Button>
     </ButtonGroup>
@@ -244,7 +246,13 @@ const PlaceBetButtonGroup = (props) => {
 
 const ClaimTokensButton = (props) => {
   return (
-    <Button variant="outline-success" size="sm" className="claim-funds-button">
+    <Button
+      variant="outline-success"
+      size="sm"
+      className="claim-funds-button"
+      onClick={() => {
+        props.claim();
+      }}>
       {props.hasUserClaimed ? "Claimed" : "Claim your Funds"}
     </Button>
   );

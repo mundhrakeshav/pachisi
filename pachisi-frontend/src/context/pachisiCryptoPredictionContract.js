@@ -156,6 +156,12 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
       .send({ from: _userAddress });
   };
 
+  const claimFunds = (_betAddress, _userAddress) => {
+    pachisiCryptoPredictionContract.methods
+      .claimFunds(_betAddress)
+      .send({ from: _userAddress });
+  };
+
   return (
     <PachisiCryptoPredictionContractContext.Provider
       value={{
@@ -165,6 +171,7 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
         getETHTokenBetsAddresses,
         placeUSDBets,
         placeETHBets,
+        claimFunds,
       }}>
       {props.children}
     </PachisiCryptoPredictionContractContext.Provider>
