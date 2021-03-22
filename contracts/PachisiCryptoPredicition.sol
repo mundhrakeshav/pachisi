@@ -63,6 +63,11 @@ contract PachisiCryptoPrediction {
         daiContract.transferFrom(_userAddress, address(this), _amount);
     }
     
+    function pushDai(address _userAddress, uint _amount) public {
+        // address recipient, uint256 amount
+        daiContract.transfer(_userAddress, _amount);
+    }
+    
     function addUSDPairAggregatorAddress(string memory _tokenName, address _aggregatorAddress) public {
         require(USDPairAggregatorAddress[_tokenName] == address(0x0));
         USDPairAggregatorAddress[_tokenName] = _aggregatorAddress;
@@ -112,12 +117,22 @@ contract PachisiCryptoPrediction {
         pullDai(msg.sender, _betAmount);
     }
     
-    function placeETHBet(address _betAddress , string memory _betToken, uint _betAmount, bool _userBet) public {
+    function placeETHBet(address _betAddress, string memory _betToken, uint _betAmount, bool _userBet) public {
         PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(_betAddress);
         _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
         userBetsETH[msg.sender][_betToken].push(_betAddress);
         pullDai(msg.sender, _betAmount);
     }
+    
+    function claimFunds(address _betAddress) public {
+        PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(_betAddress);
+        require(_pachisiCryptoBet.betResolved(),"Bet hasn't been resolved.");
+        require(!_pachisiCryptoBet.hasUserClaimed(msg.sender),"Funds have been claimed.");
+        uint totalFundsToBeClaimed = _pachisiCryptoBet.claimableFunds(msg.sender);
+        _pachisiCryptoBet.claimFunds(msg.sender);
+        pushDai(msg.sender, totalFundsToBeClaimed);
+    }
+    
     
     function getLatestPrice(address _aggregatorAddress) public view returns (int) {
         AggregatorV3Interface _priceFeed = AggregatorV3Interface(_aggregatorAddress);

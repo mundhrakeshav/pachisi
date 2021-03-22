@@ -23,7 +23,10 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
     bytes32 private jobId;
     uint256 private fee;
     int public resolvedPrice; //price during bet resolve time
-    bytes public symbol; //greateThan or lessThan
+    bytes public symbol; //greaterThan or lessThan
+    bytes public constant greaterSymbol = bytes(">"); //greateThan or lessThan
+    bytes public constant lessSymbol = bytes("<"); //greaterThan or lessThan
+
     uint public predictionPrice; //price is greaterThan/lessThan predictionPrice
     uint public volume;
     uint public trueTokensInMarket;
@@ -52,7 +55,6 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         
         symbol = bytes(_betSymbol);
         predictionPrice = _predictionPrice;
-
         totalPriceOfRemainingTokens = 10**30;
     }
     
@@ -84,8 +86,24 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
         _shareToken.transfer(_userAddress, _sharesToBeTransferred);
     }
     
-    function claimFunds() public {
+    function claimableFunds(address _userAddress) public view returns(uint){
+        uint userOwnedShareTokens;
+        if(keccak256(abi.encodePacked(symbol)) == keccak256(abi.encodePacked(greaterSymbol)) && int(predictionPrice) > resolvedPrice) {
+            return userOwnedTrueTokens[_userAddress] * volume/trueTokensInMarket;
+        } else {
+            return userOwnedFalseTokens[_userAddress] * volume/falseTokensInMarket;    
+        }
         
+        if(keccak256(abi.encodePacked(symbol)) == keccak256(abi.encodePacked(lessSymbol)) && int(predictionPrice) < resolvedPrice) {
+            return userOwnedTrueTokens[_userAddress] * volume/trueTokensInMarket;
+        } else {
+            return userOwnedFalseTokens[_userAddress] * volume/falseTokensInMarket;    
+        }
+    }
+    
+    function claimFunds(address _userAddress) public {
+        hasUserClaimed[_userAddress] = true;
+
     }
     
     function requestAlarmClock(uint256 _betResolveTime) public returns(bytes32 requestId) {
