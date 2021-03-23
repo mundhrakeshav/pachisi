@@ -2,8 +2,8 @@
 pragma solidity ^0.6.7;
 import "https://raw.githubusercontent.com/smartcontractkit/chainlink/develop/evm-contracts/src/v0.6/ChainlinkClient.sol";
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-import "./pachisiCryptoPrediction.sol";
-import "./shareToken.sol";
+import "./CryptoPrediction.sol";
+import "./ShareToken.sol";
 import "./Ownable.sol";
 
 contract PachisiCryptoBet is ChainlinkClient, Ownable {
@@ -35,8 +35,7 @@ contract PachisiCryptoBet is ChainlinkClient, Ownable {
     mapping (address => uint) public userOwnedTrueTokens;
     mapping (address => uint) public userOwnedFalseTokens;
     mapping (address => bool) public hasUserClaimed; // Will be turned to true after user has claimed the rewards
-    
-    
+
     constructor(address _aggregatorAddress, uint _betResolveTime, string memory _betPair, string memory _betToken, uint _predictionPrice, string memory _betSymbol) public {
         setPublicChainlinkToken();
         oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b;

@@ -1,11 +1,6 @@
 [
   {
     "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [],
     "name": "AAVE_LENDING_POOL_ADDRESS",
     "outputs": [
       {
@@ -182,6 +177,19 @@
   },
   {
     "inputs": [],
+    "name": "daiContract",
+    "outputs": [
+      {
+        "internalType": "contract ERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "daiContractAddress",
     "outputs": [
       {
@@ -240,6 +248,32 @@
   },
   {
     "inputs": [],
+    "name": "lendingPool",
+    "outputs": [
+      {
+        "internalType": "contract LendingPool",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "linkContract",
+    "outputs": [
+      {
+        "internalType": "contract ERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "linkContractAddress",
     "outputs": [
       {
@@ -254,9 +288,19 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "onBehalfOf",
+        "type": "address"
       }
     ],
     "name": "makeDepositToAave",
@@ -334,6 +378,24 @@
       }
     ],
     "name": "pullDai",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "pushDai",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -436,6 +498,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "amount",

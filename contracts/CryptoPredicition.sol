@@ -1,20 +1,11 @@
 
 pragma solidity ^0.6.7;
 import "https://github.com/smartcontractkit/chainlink/blob/develop/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-import "./pachisiCryptoBet.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.4/contracts/token/ERC20/ERC20.sol";
+import "./CryptoBet.sol";
+import {AaveClient} from "./AaveClient.sol";
+import {ERC20Client} from "./pachisiERC20Client.sol";
 
-
-
-contract PachisiCryptoPrediction {
-    
-    address public daiContractAddress = 0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD;
-    address public linkContractAddress = 0xa36085F69e2889c224210F603D836748e7dC0088;
-    
-    ERC20 daiContract;
-    ERC20 linkContract;
-
-    
+contract PachisiCryptoPrediction is AaveClient, ERC20Client {
     mapping(string => address) public USDPairAggregatorAddress; //TokenName => aggregatorAddress
     mapping(string => address) public ETHPairAggregatorAddress; //TokenName => aggregatorAddress
     
@@ -28,44 +19,12 @@ contract PachisiCryptoPrediction {
     mapping(address => mapping(string => address[])) public userBetsUSD;
     mapping(address => mapping(string => address[])) public userBetsETH;
     
-    
-    modifier enoughLinkBalanceOnContract() {
-        require(linkContract.balanceOf(address(this)) >= 10**17, "Not enough Link Balance");
-        _;
-    }
-
-    modifier enoughDaiBalanceWithUser(uint _amount, address _userAddress) {
-        require(daiContract.balanceOf(_userAddress) >= _amount, "Not enough dai balance.");
-        _;
-    }
-    
-    modifier enoughDaiBalanceApproved(uint _amount, address _userAddress) {
-        require(daiContract.allowance(_userAddress, address(this)) >= _amount, "Not enough Dai balance approved.");
-        _;
-    }
-    
-    constructor() public {
-        daiContract = ERC20(daiContractAddress);
-        linkContract = ERC20(linkContractAddress);
-
-    }
-    
     function getUSDBets() public view returns(address[] memory) {
         return tokenUSDBetAddresses;
     }    
     
     function getETHBets() public view returns(address[] memory) {
         return tokenETHBetAddresses;
-    }
-    
-    function pullDai(address _userAddress, uint _amount) public {
-        // address sender, address recipient, uint256 amount
-        daiContract.transferFrom(_userAddress, address(this), _amount);
-    }
-    
-    function pushDai(address _userAddress, uint _amount) public {
-        // address recipient, uint256 amount
-        daiContract.transfer(_userAddress, _amount);
     }
     
     function addUSDPairAggregatorAddress(string memory _tokenName, address _aggregatorAddress) public {
@@ -93,6 +52,8 @@ contract PachisiCryptoPrediction {
         tokenUSDBetAddresses.push(address(_pachisiCryptoBet));
         _pachisiCryptoBet.requestAlarmClock(_betResolveTime);
         pullDai(msg.sender, _initialBetAmount);
+        daiContract.approve(AAVE_LENDING_POOL_ADDRESS, _initialBetAmount);
+        makeDepositToAave(daiContractAddress, _initialBetAmount, address(this)); 
     }
     
     function createETHBet(  uint _betResolveTime, 
@@ -108,6 +69,8 @@ contract PachisiCryptoPrediction {
         tokenETHBetAddresses.push(address(_pachisiCryptoBet));
         _pachisiCryptoBet.requestAlarmClock(_betResolveTime);
         pullDai(msg.sender, _initialBetAmount);
+        daiContract.approve(AAVE_LENDING_POOL_ADDRESS, _initialBetAmount);
+        makeDepositToAave(daiContractAddress, _initialBetAmount, address(this)); 
     }
     
     function placeUSDBet(address _betAddress, string memory _betToken, uint _betAmount, bool _userBet) public {
@@ -115,6 +78,9 @@ contract PachisiCryptoPrediction {
         _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
         userBetsUSD[msg.sender][_betToken].push(_betAddress);
         pullDai(msg.sender, _betAmount);
+        daiContract.approve(AAVE_LENDING_POOL_ADDRESS, _betAmount);
+        makeDepositToAave(daiContractAddress, _betAmount, address(this)); 
+
     }
     
     function placeETHBet(address _betAddress, string memory _betToken, uint _betAmount, bool _userBet) public {
@@ -122,15 +88,18 @@ contract PachisiCryptoPrediction {
         _pachisiCryptoBet.bet(_betAmount, _userBet, msg.sender);
         userBetsETH[msg.sender][_betToken].push(_betAddress);
         pullDai(msg.sender, _betAmount);
+        daiContract.approve(AAVE_LENDING_POOL_ADDRESS, _betAmount);
+        makeDepositToAave(daiContractAddress, _betAmount, address(this)); 
+
     }
     
     function claimFunds(address _betAddress) public {
         PachisiCryptoBet _pachisiCryptoBet = PachisiCryptoBet(_betAddress);
         require(_pachisiCryptoBet.betResolved(),"Bet hasn't been resolved.");
         require(!_pachisiCryptoBet.hasUserClaimed(msg.sender),"Funds have been claimed.");
-        uint totalFundsToBeClaimed = _pachisiCryptoBet.claimableFunds(msg.sender);
+        uint _totalFundsToBeClaimed = _pachisiCryptoBet.claimableFunds(msg.sender);
         _pachisiCryptoBet.claimFunds(msg.sender);
-        pushDai(msg.sender, totalFundsToBeClaimed);
+        withdrawFromAave(daiContractAddress, _totalFundsToBeClaimed, msg.sender);
     }
     
     

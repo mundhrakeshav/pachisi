@@ -17,6 +17,7 @@ import {
 } from "react-bootstrap";
 
 import "react-datepicker/dist/react-datepicker.css";
+import config from "../../../../config";
 
 const UsdPairCard = () => {
   const {
@@ -158,7 +159,6 @@ const UsdPairCard = () => {
                           );
                           return;
                         }
-
                         if (
                           parseInt(allowance) <
                           parseInt(
@@ -172,7 +172,14 @@ const UsdPairCard = () => {
                           );
                           return;
                         }
-                        // console.log("done");
+                        console.log(
+                          date.getTime(),
+                          USDPairAssets[selectedUSDPair]["name"],
+                          selectedSymbol,
+                          predictedPrice,
+                          initialBetAmount,
+                          userAddress
+                        );
                         createUSDBet(
                           date.getTime(),
                           USDPairAssets[selectedUSDPair]["name"],

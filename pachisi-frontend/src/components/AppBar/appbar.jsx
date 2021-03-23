@@ -31,8 +31,8 @@ const AppBar = () => {
           </Nav.Link>
 
           <Nav.Link>
-            <Link to="/number" className="nav-button">
-              Numbers
+            <Link to="/lottery" className="nav-button">
+              Lottery
             </Link>
           </Nav.Link>
           <Nav.Link>

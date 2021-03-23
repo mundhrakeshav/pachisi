@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import Web3 from "web3";
-import pachisiCryptoPredictionAbi from "./../contractAbis/PachisiCryptoPrediction.json";
+import pachisiCryptoPredictionAbi from "./../contractAbis/pachisi.json";
 import config from "../config";
 export const PachisiCryptoPredictionContractContext = createContext();
 
@@ -16,7 +16,7 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
     const _web3 = new Web3(window.ethereum);
     const _contract = new _web3.eth.Contract(
       pachisiCryptoPredictionAbi,
-      config.pachisiCryptoPredictionContractAddress
+      config.pachisiAddress
     );
     setWeb3(_web3);
     setPachisiCryptoPredictionContract(_contract);
@@ -88,7 +88,7 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
     const _web3 = new Web3(window.ethereum);
     const _contract = new _web3.eth.Contract(
       pachisiCryptoPredictionAbi,
-      config.pachisiCryptoPredictionContractAddress
+      config.pachisiAddress
     );
     const addresses = await _contract.methods.getUSDBets().call();
     return addresses;
@@ -97,7 +97,7 @@ const PachisiCryptoPredictionContractContextProvider = (props) => {
     const _web3 = new Web3(window.ethereum);
     const _contract = new _web3.eth.Contract(
       pachisiCryptoPredictionAbi,
-      config.pachisiCryptoPredictionContractAddress
+      config.pachisiAddress
     );
     const addresses = await _contract.methods.getETHBets().call();
     return addresses;

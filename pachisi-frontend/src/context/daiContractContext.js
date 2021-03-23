@@ -23,15 +23,17 @@ const DaiContractContextProvider = (props) => {
     const web3 = new Web3(window.ethereum);
     console.log(web3.utils.toWei(amount), userAddress);
     const tx = daiContract.methods
-      .approve(
-        config.pachisiCryptoPredictionContractAddress,
-        web3.utils.toWei(amount)
-      )
+      .approve(config.pachisiAddress, web3.utils.toWei(amount))
       .send({ from: userAddress });
   };
   const getAllowance = async (userAddress) => {
-    const allowedAccessAmount = await daiContract.methods
-      .allowance(userAddress, config.pachisiCryptoPredictionContractAddress)
+    const web3 = new Web3(window.ethereum);
+    const _contract = new web3.eth.Contract(
+      daiContractAbi,
+      config.daiContractAddress
+    );
+    const allowedAccessAmount = await _contract.methods
+      .allowance(userAddress, config.pachisiAddress)
       .call();
     return allowedAccessAmount;
   };

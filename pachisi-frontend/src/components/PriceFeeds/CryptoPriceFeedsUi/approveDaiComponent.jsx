@@ -7,6 +7,7 @@ import {
   FormControl,
   Button,
 } from "react-bootstrap";
+import config from "../../../config";
 import { DaiContractContext } from "../../../context/daiContractContext";
 import { Web3Context } from "../../../context/web3Context";
 
@@ -14,7 +15,18 @@ const ApproveDaiCard = () => {
   const { approveDaiContract, getAllowance } = useContext(DaiContractContext);
   const { userAddress } = useContext(Web3Context);
   const [amount, setAmount] = useState("");
+  const [allowance, setAllowance] = useState(0);
+  useEffect(async () => {
+    await init();
+  });
 
+  const init = async () => {
+    const _allowance = await getAllowance(
+      userAddress,
+      config.pachisiCryptoPredictionContractAddress
+    );
+    setAllowance(_allowance);
+  };
   return (
     <div className="approve-dai-card-wrapper">
       <Card className="approve-dai-card">
@@ -58,6 +70,7 @@ const ApproveDaiCard = () => {
                 </Button>
               </Col>
             </Row>
+            Allowance:{allowance / 10 ** 18}
           </div>
         </Card.Title>
       </Card>
