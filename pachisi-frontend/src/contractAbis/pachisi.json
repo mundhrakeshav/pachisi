@@ -1,5 +1,44 @@
 [
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ChainlinkCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ChainlinkFulfilled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ChainlinkRequested",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "AAVE_LENDING_POOL_ADDRESS",
     "outputs": [
@@ -89,6 +128,65 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "betResolveTimeToBet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "betResolveTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "volumeUpDown",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "resolvedRandomness",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "volumeEvenOdd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalVolumeUp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalVolumeDown",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalVolumeEven",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalVolumeOdd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "betResolved",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_betAddress",
         "type": "address"
@@ -97,6 +195,80 @@
     "name": "claimFunds",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimOddEvenLotteryFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimUpDownLotteryFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimableEvenOddFunds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimableUpDownFunds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -133,6 +305,13 @@
       }
     ],
     "name": "createETHBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "createLotteryBet",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -176,6 +355,38 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "createdBets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentBetResolveTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "daiContract",
     "outputs": [
@@ -203,31 +414,25 @@
   },
   {
     "inputs": [],
-    "name": "getETHBets",
+    "name": "getCreatedBets",
     "outputs": [
       {
-        "internalType": "address[]",
+        "internalType": "uint256[]",
         "name": "",
-        "type": "address[]"
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_aggregatorAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getLatestPrice",
+    "inputs": [],
+    "name": "getETHBets",
     "outputs": [
       {
-        "internalType": "int256",
+        "internalType": "address[]",
         "name": "",
-        "type": "int256"
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -241,6 +446,67 @@
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getUserBetAmount",
+    "outputs": [
+      {
+        "internalType": "uint256[4]",
+        "name": "",
+        "type": "uint256[4]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "hasUserClaimed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "interval",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -339,6 +605,29 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_userBet",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "placeOddEvenBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_betAddress",
         "type": "address"
@@ -367,17 +656,22 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_userAddress",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_userBet",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
       }
     ],
-    "name": "pullDai",
+    "name": "placeUpDownBet",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -395,7 +689,65 @@
         "type": "uint256"
       }
     ],
-    "name": "pushDai",
+    "name": "pullDai",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "random",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "requestAlarmClockCreateBet",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "requestId",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "requestAlarmClockGetRandomness",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "requestId",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setRamdomness",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -433,6 +785,19 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalPriceOfRemainingTokens",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

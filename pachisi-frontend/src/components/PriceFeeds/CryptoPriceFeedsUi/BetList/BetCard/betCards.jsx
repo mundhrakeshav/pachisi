@@ -91,14 +91,6 @@ const BetCard = (props) => {
       setPredictionPrice(data["predictionPrice"] / 10 ** 18);
     }
     setBetResolved(data["betResolved"]);
-    //   trueTokenAddress,
-    //   falseTokenAddress,
-    //   volume,
-    //   trueTokensInMarket,
-    //   falseTokensInMarket,
-    //   userOwnedTrueTokens,
-    //   userOwnedFalseTokens,
-    //   hasUserClaimed;
 
     setVolume(data["volume"]);
     setTrueTokensInMarket(data["trueTokensInMarket"]);

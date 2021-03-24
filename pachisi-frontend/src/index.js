@@ -5,10 +5,25 @@ import Web3ContextProvider from "./context/web3Context";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import LotteryContractContextProvider from "./context/lotteryPredictionContext";
+import PachisiCryptoBetProvider from "./context/pachisiCryptoBetContext";
+import DaiContractContextProvider from "./context/daiContractContext";
+import CryptoPriceFeedsPageContextProvider from "./context/PriceFeedsPageContext";
+import PachisiCryptoPredictionContractContextProvider from "./context/pachisiCryptoPredictionContract";
 
 ReactDOM.render(
   <Web3ContextProvider>
-    <App />
+    <PachisiCryptoBetProvider>
+      <DaiContractContextProvider>
+        <CryptoPriceFeedsPageContextProvider>
+          <PachisiCryptoPredictionContractContextProvider>
+            <LotteryContractContextProvider>
+              <App />
+            </LotteryContractContextProvider>{" "}
+          </PachisiCryptoPredictionContractContextProvider>
+        </CryptoPriceFeedsPageContextProvider>
+      </DaiContractContextProvider>
+    </PachisiCryptoBetProvider>
   </Web3ContextProvider>,
 
   document.getElementById("root")

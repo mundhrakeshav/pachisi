@@ -18,13 +18,10 @@ const ApproveDaiCard = () => {
   const [allowance, setAllowance] = useState(0);
   useEffect(async () => {
     await init();
-  });
+  }, []);
 
   const init = async () => {
-    const _allowance = await getAllowance(
-      userAddress,
-      config.pachisiCryptoPredictionContractAddress
-    );
+    const _allowance = await getAllowance(userAddress, config.pachisiAddress);
     setAllowance(_allowance);
   };
   return (
