@@ -81,7 +81,6 @@ const UsdPairCard = () => {
                 </Col>
                 <Col xs="2">
                   <SymbolDropDown
-                    date={date}
                     selectedSymbol={selectedSymbol}
                     switchSymbol={switchSymbol}
                     symbols={symbols}

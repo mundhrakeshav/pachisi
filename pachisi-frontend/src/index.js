@@ -10,20 +10,23 @@ import PachisiCryptoBetProvider from "./context/pachisiCryptoBetContext";
 import DaiContractContextProvider from "./context/daiContractContext";
 import CryptoPriceFeedsPageContextProvider from "./context/PriceFeedsPageContext";
 import PachisiCryptoPredictionContractContextProvider from "./context/pachisiCryptoPredictionContract";
+import StockPriceFeedsPageContextProvider from "./context/stockBetCardContext";
 
 ReactDOM.render(
   <Web3ContextProvider>
-    <PachisiCryptoBetProvider>
-      <DaiContractContextProvider>
-        <CryptoPriceFeedsPageContextProvider>
-          <PachisiCryptoPredictionContractContextProvider>
-            <LotteryContractContextProvider>
-              <App />
-            </LotteryContractContextProvider>{" "}
-          </PachisiCryptoPredictionContractContextProvider>
-        </CryptoPriceFeedsPageContextProvider>
-      </DaiContractContextProvider>
-    </PachisiCryptoBetProvider>
+    <StockPriceFeedsPageContextProvider>
+      <PachisiCryptoBetProvider>
+        <DaiContractContextProvider>
+          <CryptoPriceFeedsPageContextProvider>
+            <PachisiCryptoPredictionContractContextProvider>
+              <LotteryContractContextProvider>
+                <App />
+              </LotteryContractContextProvider>{" "}
+            </PachisiCryptoPredictionContractContextProvider>
+          </CryptoPriceFeedsPageContextProvider>
+        </DaiContractContextProvider>
+      </PachisiCryptoBetProvider>{" "}
+    </StockPriceFeedsPageContextProvider>
   </Web3ContextProvider>,
 
   document.getElementById("root")

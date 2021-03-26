@@ -13,18 +13,10 @@ import PachisiCryptoBetProvider from "../../../context/pachisiCryptoBetContext";
 const CryptoPriceFeedsRightUI = () => {
   return (
     <div>
-      <PachisiCryptoBetProvider>
-        <DaiContractContextProvider>
-          <CryptoPriceFeedsPageContextProvider>
-            <PachisiCryptoPredictionContractContextProvider>
-              <ApproveDaiCard />
-              <UsdPairCard />
-              <EthPairCard />
-              <BetList />
-            </PachisiCryptoPredictionContractContextProvider>
-          </CryptoPriceFeedsPageContextProvider>
-        </DaiContractContextProvider>
-      </PachisiCryptoBetProvider>
+      <ApproveDaiCard />
+      <UsdPairCard />
+      <EthPairCard />
+      <BetList />
     </div>
   );
 };
