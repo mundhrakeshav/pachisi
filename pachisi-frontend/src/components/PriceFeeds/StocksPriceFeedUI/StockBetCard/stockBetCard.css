@@ -1,0 +1,24 @@
+.bet-card-wrapper {
+  margin: 10px;
+}
+
+.bet-card {
+  padding: 10px;
+}
+.place-bet-button {
+  height: 5vh;
+  margin: 3vh 3vw;
+}
+
+.claim-funds-button {
+  width: 80%;
+  align-self: center;
+}
+
+.bet-card-left-column {
+  text-align: left;
+}
+
+.bet-card-right-column {
+  text-align: right;
+}

@@ -2,9 +2,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_aggregatorAddress",
-        "type": "address"
+        "internalType": "string",
+        "name": "_url",
+        "type": "string"
       },
       {
         "internalType": "uint256",
@@ -13,12 +13,7 @@
       },
       {
         "internalType": "string",
-        "name": "_betPair",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_betToken",
+        "name": "_betStock",
         "type": "string"
       },
       {
@@ -95,12 +90,12 @@
   },
   {
     "inputs": [],
-    "name": "aggregatorAddress",
+    "name": "alarmClockResolved",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "bool",
         "name": "",
-        "type": "address"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -131,19 +126,6 @@
   },
   {
     "inputs": [],
-    "name": "betPair",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "betResolveTime",
     "outputs": [
       {
@@ -170,7 +152,7 @@
   },
   {
     "inputs": [],
-    "name": "betToken",
+    "name": "betStock",
     "outputs": [
       {
         "internalType": "string",
@@ -240,27 +222,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getLatestPrice",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes32",
         "name": "_requestId",
         "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
       }
     ],
-    "name": "getPrice",
+    "name": "fulfill",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -344,14 +318,15 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_betResolveTime",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "requestAlarmClock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "requestVolumeData",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -367,9 +342,9 @@
     "name": "resolvedPrice",
     "outputs": [
       {
-        "internalType": "int256",
+        "internalType": "uint256",
         "name": "",
-        "type": "int256"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -435,6 +410,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "url",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

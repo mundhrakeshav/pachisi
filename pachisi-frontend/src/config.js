@@ -1,5 +1,6 @@
 module.exports = {
-  pachisiAddress: "0x101CFfd9460119ef5B17d53Ea0f98FF7d8e92bFA",
+  pachisiAddress: "0x8E4d424D607448A66ba2636C678D92CB925f3ad5",
+  pachisiStockAddress: "0xF769681766b67D8b5D34832a380c3F6C843d5B4b",
   daiContractAddress: "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD",
   linkContractAddress: "0xa36085F69e2889c224210F603D836748e7dC0088",
 };

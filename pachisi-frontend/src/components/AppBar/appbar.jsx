@@ -23,13 +23,11 @@ const AppBar = () => {
               Sports
             </Link>
           </Nav.Link>
-
           <Nav.Link>
             <Link to="/price/crypto" className="nav-button">
               PriceFeeds
             </Link>
           </Nav.Link>
-
           <Nav.Link>
             <Link to="/lottery" className="nav-button">
               Lottery
@@ -60,7 +58,12 @@ const AppBar = () => {
                 <CgProfile />
               </Link>
             </Nav.Link>
-          </OverlayTrigger>
+          </OverlayTrigger>{" "}
+          <Nav.Link>
+            <Link to="/nfts" className="nav-button">
+              <Button className="nft-button"> NFTS</Button>
+            </Link>
+          </Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

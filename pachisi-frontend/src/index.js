@@ -10,22 +10,28 @@ import PachisiCryptoBetProvider from "./context/pachisiCryptoBetContext";
 import DaiContractContextProvider from "./context/daiContractContext";
 import CryptoPriceFeedsPageContextProvider from "./context/PriceFeedsPageContext";
 import PachisiCryptoPredictionContractContextProvider from "./context/pachisiCryptoPredictionContract";
-import StockPriceFeedsPageContextProvider from "./context/stockBetCardContext";
+import StockPriceFeedsPageContextProvider from "./context/StockPriceFeedsPageContext";
+import PachisiStockPredictionContractContextProvider from "./context/pachisiStockPredicitonContext";
+import PachisiStockBetContextProvider from "./context/pachisiStockBetContext";
 
 ReactDOM.render(
   <Web3ContextProvider>
     <StockPriceFeedsPageContextProvider>
-      <PachisiCryptoBetProvider>
-        <DaiContractContextProvider>
-          <CryptoPriceFeedsPageContextProvider>
-            <PachisiCryptoPredictionContractContextProvider>
-              <LotteryContractContextProvider>
-                <App />
-              </LotteryContractContextProvider>{" "}
-            </PachisiCryptoPredictionContractContextProvider>
-          </CryptoPriceFeedsPageContextProvider>
-        </DaiContractContextProvider>
-      </PachisiCryptoBetProvider>{" "}
+      <PachisiStockBetContextProvider>
+        <PachisiStockPredictionContractContextProvider>
+          <PachisiCryptoBetProvider>
+            <DaiContractContextProvider>
+              <CryptoPriceFeedsPageContextProvider>
+                <PachisiCryptoPredictionContractContextProvider>
+                  <LotteryContractContextProvider>
+                    <App />
+                  </LotteryContractContextProvider>{" "}
+                </PachisiCryptoPredictionContractContextProvider>
+              </CryptoPriceFeedsPageContextProvider>
+            </DaiContractContextProvider>
+          </PachisiCryptoBetProvider>{" "}
+        </PachisiStockPredictionContractContextProvider>
+      </PachisiStockBetContextProvider>
     </StockPriceFeedsPageContextProvider>
   </Web3ContextProvider>,
 

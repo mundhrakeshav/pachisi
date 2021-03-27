@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StockPriceFeedsPageContext } from "../../../../context/stockBetCardContext";
+import { StockPriceFeedsPageContext } from "../../../../context/StockPriceFeedsPageContext";
 import { Web3Context } from "../../../../context/web3Context";
 import { DaiContractContext } from "../../../../context/daiContractContext";
 import DatePicker from "react-datepicker";
@@ -18,6 +18,7 @@ import {
 import "react-datepicker/dist/react-datepicker.css";
 import config from "../../../../config";
 import "./createStockBetCard.css";
+import { PachisiStockPredictionContractContext } from "../../../../context/pachisiStockPredicitonContext";
 
 const CreateStockBetCard = () => {
   const symbols = [">", "<"];
@@ -27,6 +28,7 @@ const CreateStockBetCard = () => {
   const [initialBetAmount, setInitialBetAmount] = useState(0);
 
   const { userAddress, web3 } = useContext(Web3Context);
+  const { createBet } = useContext(PachisiStockPredictionContractContext);
 
   const { approveDaiContract, getAllowance, getBalance } = useContext(
     DaiContractContext
@@ -38,17 +40,13 @@ const CreateStockBetCard = () => {
     StockAssets,
   } = useContext(StockPriceFeedsPageContext);
 
-  useEffect(() => {
-    console.log(StockAssets[selectedStockPair]);
-  });
-
   const switchSymbol = (index) => {
     setSelectedSymbol(symbols[index]);
   };
 
   return (
-    <div className="pair-card-wrapper">
-      <Row className="price-feeds-right-ui-wrapper">
+    <div className="pair-stock-card-wrapper">
+      <Row className="price-feeds-left-ui-wrapper">
         <Col>
           <Card className="price-feeds-card">
             <Card.Body>
@@ -132,7 +130,7 @@ const CreateStockBetCard = () => {
                     boxShadow: "10px 10px 8px #888888",
                   }}
                   onClick={(event) => {
-                    console.log(
+                    createBet(
                       date.getTime(),
                       StockAssets[selectedStockPair]["name"],
                       selectedSymbol,
@@ -159,10 +157,7 @@ const DropDownButtonStocks = (props) => {
     StockAssets,
     changeSelectedStock,
   } = useContext(StockPriceFeedsPageContext);
-  console.log(StockAssets, "StockAssets");
   const dropDownItemList = StockAssets.map((StockAsset, index) => {
-    console.log(StockAsset, "StockAsset");
-
     return (
       <Dropdown.Item
         key={index}

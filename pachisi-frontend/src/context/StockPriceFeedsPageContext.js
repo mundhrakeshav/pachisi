@@ -18,20 +18,20 @@ const StockPriceFeedsPageContextProvider = (props) => {
   );
 
   const init = async () => {
-    // const stockPrice = await getStockPrices(StockAssets[0]["name"]);
-    // // setSelectedStockPairPriceTag(usdPairPrice["USD"]);
-    // console.log("stockPrice");
+    const stockPrice = await getStockPrices(StockAssets[0]["name"]);
+    setSelectedStockPairPriceTag(stockPrice["Global Quote"]["05. price"]);
   };
   useEffect(() => {
     init();
   }, []);
 
   const changeSelectedStock = async (selectedIndex) => {
-    // const newStockPairPrice = await getUSDPairPrices(
-    //   StockAssets[selectedCurrencyIndex]["name"]
-    // );
-    // console.log(newStockPairPrice);
-    // setSelectedStockPairPriceTag(newStockPairPrice["USD"]);
+    const newStockPairPrice = await getStockPrices(
+      StockAssets[selectedIndex]["name"]
+    );
+    setSelectedStockPairPriceTag(
+      newStockPairPrice["Global Quote"]["05. price"]
+    );
     setSelectedStockPair(selectedIndex);
   };
 
