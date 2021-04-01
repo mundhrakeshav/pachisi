@@ -8,6 +8,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { Web3Context } from "./context/web3Context";
 import { Spinner } from "react-bootstrap";
 import LotteryPage from "./components/Lottery/Lottery";
+import NFTPage from "./components/nftComponents/nftPage";
+import NftPriceFeedsPage from "./components/nftComponents/nftPriceFeeds/nftPriceFeeds";
 function App() {
   const { userAddress, web3 } = useContext(Web3Context);
 
@@ -31,6 +33,7 @@ const AppBody = () => {
           <Route path="/profile" component={ProfilePage} exact />
           <Route path="/price/:asset" component={PriceFeedsPage} exact />
           <Route path="/lottery" component={LotteryPage} exact />
+          <Route path="/nftPage/:asset" component={NftPriceFeedsPage} exact />
         </Switch>
       </div>
     );

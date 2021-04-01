@@ -1,0 +1,403 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "ETHPairAggregatorAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "USDPairAggregatorAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_tokenName",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_aggregatorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "addETHPairAggregatorAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_tokenName",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_aggregatorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "addUSDPairAggregatorAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_assetNFTAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tokenID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_betAddress",
+        "type": "address"
+      }
+    ],
+    "name": "agreeBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_aggregatorAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_betToken",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_predictionPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_betSymbol",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_assetNFTAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tokenID",
+        "type": "uint256"
+      }
+    ],
+    "name": "createETHBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_aggregatorAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_betToken",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_betResolveTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_predictionPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_betSymbol",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_assetNFTAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tokenID",
+        "type": "uint256"
+      }
+    ],
+    "name": "createUSDBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daiContract",
+    "outputs": [
+      {
+        "internalType": "contract ERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daiContractAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_betAddress",
+        "type": "address"
+      }
+    ],
+    "name": "denyBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_betAddress",
+        "type": "address"
+      }
+    ],
+    "name": "finaliseBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getETHBets",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUSDBets",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "linkContract",
+    "outputs": [
+      {
+        "internalType": "contract ERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "linkContractAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "pullDai",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenETHBetAddresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenUSDBetAddresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "userBetsETH",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "userBetsUSD",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

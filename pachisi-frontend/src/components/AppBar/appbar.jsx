@@ -19,6 +19,11 @@ const AppBar = () => {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto nav">
           <Nav.Link>
+            <Link to="/politics" className="nav-button">
+              Politics
+            </Link>
+          </Nav.Link>
+          <Nav.Link>
             <Link to="/sport/cricket" className="nav-button">
               Sports
             </Link>
@@ -60,7 +65,7 @@ const AppBar = () => {
             </Nav.Link>
           </OverlayTrigger>{" "}
           <Nav.Link>
-            <Link to="/nfts" className="nav-button">
+            <Link to="/nftPage/crypto" className="nav-button">
               <Button className="nft-button"> NFTS</Button>
             </Link>
           </Nav.Link>

@@ -23,7 +23,6 @@ const PriceFeedsPage = () => {
               exact
             />
             <Route path="/price/stocks" component={StocksPriceFeedUI} exact />
-            {/* <Route path="/profile" component={ProfilePage} exact /> */}
           </Switch>
         </Col>
       </Row>

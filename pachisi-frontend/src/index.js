@@ -13,26 +13,32 @@ import PachisiCryptoPredictionContractContextProvider from "./context/pachisiCry
 import StockPriceFeedsPageContextProvider from "./context/StockPriceFeedsPageContext";
 import PachisiStockPredictionContractContextProvider from "./context/pachisiStockPredicitonContext";
 import PachisiStockBetContextProvider from "./context/pachisiStockBetContext";
+import NFTCatContractContextProvider from "./context/NFTContext/nftCatContractContext";
+import NFTDogContractContextProvider from "./context/NFTContext/nftDogContractContext";
 
 ReactDOM.render(
   <Web3ContextProvider>
-    <StockPriceFeedsPageContextProvider>
-      <PachisiStockBetContextProvider>
-        <PachisiStockPredictionContractContextProvider>
-          <PachisiCryptoBetProvider>
-            <DaiContractContextProvider>
-              <CryptoPriceFeedsPageContextProvider>
-                <PachisiCryptoPredictionContractContextProvider>
-                  <LotteryContractContextProvider>
-                    <App />
-                  </LotteryContractContextProvider>{" "}
-                </PachisiCryptoPredictionContractContextProvider>
-              </CryptoPriceFeedsPageContextProvider>
-            </DaiContractContextProvider>
-          </PachisiCryptoBetProvider>{" "}
-        </PachisiStockPredictionContractContextProvider>
-      </PachisiStockBetContextProvider>
-    </StockPriceFeedsPageContextProvider>
+    <NFTDogContractContextProvider>
+      <NFTCatContractContextProvider>
+        <StockPriceFeedsPageContextProvider>
+          <PachisiStockBetContextProvider>
+            <PachisiStockPredictionContractContextProvider>
+              <PachisiCryptoBetProvider>
+                <DaiContractContextProvider>
+                  <CryptoPriceFeedsPageContextProvider>
+                    <PachisiCryptoPredictionContractContextProvider>
+                      <LotteryContractContextProvider>
+                        <App />
+                      </LotteryContractContextProvider>{" "}
+                    </PachisiCryptoPredictionContractContextProvider>
+                  </CryptoPriceFeedsPageContextProvider>
+                </DaiContractContextProvider>
+              </PachisiCryptoBetProvider>{" "}
+            </PachisiStockPredictionContractContextProvider>
+          </PachisiStockBetContextProvider>
+        </StockPriceFeedsPageContextProvider>
+      </NFTCatContractContextProvider>
+    </NFTDogContractContextProvider>
   </Web3ContextProvider>,
 
   document.getElementById("root")
