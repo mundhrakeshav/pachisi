@@ -21,27 +21,6 @@ const ApproveNFTCard = () => {
     setSelectedSupportedNFTContract,
   ] = useState(0);
 
-  const switchSupportedNFTContracts = async (index) => {
-    if (index === 1) {
-      getDogTokens();
-    } else {
-      init();
-    }
-    setSelectedSupportedNFTContract(index);
-    switchUserTokenIndex(0);
-  };
-
-  const switchUserTokenIndex = async (index) => {
-    setUserTokensIndex(index);
-    let _tokenDetails;
-    if (selectedSupportedNFTContract === 0) {
-      _tokenDetails = await getCatTokenDetails(index);
-    } else {
-      _tokenDetails = await getDogTokenDetails(index);
-    }
-
-    setTokenDetails(_tokenDetails);
-  };
   const [tokenDetails, setTokenDetails] = useState({});
 
   const [userTokens, setUserTokens] = useState([]);
@@ -93,7 +72,27 @@ const ApproveNFTCard = () => {
       approveDog(userTokenIndex, userAddress);
     }
   };
+  const switchSupportedNFTContracts = async (index) => {
+    if (index === 1) {
+      getDogTokens();
+    } else {
+      init();
+    }
+    setSelectedSupportedNFTContract(index);
+    switchUserTokenIndex(0);
+  };
 
+  const switchUserTokenIndex = async (index) => {
+    setUserTokensIndex(index);
+    let _tokenDetails;
+    if (selectedSupportedNFTContract === 0) {
+      _tokenDetails = await getCatTokenDetails(index);
+    } else {
+      _tokenDetails = await getDogTokenDetails(index);
+    }
+
+    setTokenDetails(_tokenDetails);
+  };
   if (!isLoading) {
     return (
       <div className="approve-nft-card-wrapper">

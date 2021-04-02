@@ -5,5 +5,5 @@ module.exports = {
   linkContractAddress: "0xa36085F69e2889c224210F603D836748e7dC0088",
   dogNFTContract: "0x46cfaA11e227431433D1F7c357d8BF45860a6655",
   catNFTContract: "0x3385d9Ae9EB2A6735b5395E0eD9a121035E0b633",
-  nftCryptoPredictionContract: "0x18671003558aeC043d63a56a21175cc9264E067b",
+  nftCryptoPredictionContract: "0x351dae0b659b98778bb51e88e82c7f826314cb12",
 };

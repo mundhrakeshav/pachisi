@@ -99,11 +99,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_aggregatorAddress",
-        "type": "address"
-      },
-      {
         "internalType": "string",
         "name": "_betToken",
         "type": "string"
@@ -141,11 +136,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_aggregatorAddress",
-        "type": "address"
-      },
       {
         "internalType": "string",
         "name": "_betToken",

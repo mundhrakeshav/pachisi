@@ -5,54 +5,91 @@ import config from "../../config";
 export const NFTPredictionContractContext = createContext();
 
 const NFTPredictionContractContextProvider = (props) => {
+  //
+  const [
+    pachisiCryptoNFTPredictionContract,
+    setPachisiCryptoNFTPredictionContract,
+  ] = useState({});
+
   const init = async () => {
     const web3 = new Web3(window.ethereum);
     const _contract = new web3.eth.Contract(
-      daiContractAbi,
-      config.daiContractAddress
+      pachisiCryptoNFTPredicitonABI,
+      config.nftCryptoPredictionContract
     );
-    setDaiContract(_contract);
+    setPachisiCryptoNFTPredictionContract(_contract);
   };
 
   useEffect(() => {
     init();
   }, []);
 
-  const approveDaiContract = async (amount, userAddress) => {
-    const web3 = new Web3(window.ethereum);
-    console.log(web3.utils.toWei(amount), userAddress);
-    const tx = daiContract.methods
-      .approve(config.pachisiAddress, web3.utils.toWei(amount))
-      .send({ from: userAddress });
-  };
-
-  const getAllowance = async (userAddress) => {
+  const createUSDBet = async (
+    _betToken,
+    _betResolveTime,
+    _predictionPrice,
+    _betSymbol,
+    _assetNFTAddress,
+    _tokenID,
+    _userAddress
+  ) => {
     const web3 = new Web3(window.ethereum);
     const _contract = new web3.eth.Contract(
-      daiContractAbi,
-      config.daiContractAddress
+      pachisiCryptoNFTPredicitonABI,
+      config.nftCryptoPredictionContract
     );
-    const allowedAccessAmount = await _contract.methods
-      .allowance(userAddress, config.pachisiAddress)
-      .call();
-    return allowedAccessAmount;
+    _contract.methods
+      .createUSDBet(
+        _betToken,
+        parseInt(_betResolveTime / 1000),
+        _predictionPrice.toString(),
+        _betSymbol,
+        _assetNFTAddress,
+        _tokenID
+      )
+      .send({ from: _userAddress });
   };
 
-  const approveDaiContractToStocksContract = async (amount, userAddress) => {
+  const getUSDBets = async () => {
     const web3 = new Web3(window.ethereum);
-    console.log(web3.utils.toWei(amount), userAddress);
-    const tx = daiContract.methods
-      .approve(config.pachisiStockAddress, web3.utils.toWei(amount))
-      .send({ from: userAddress });
+    const _contract = new web3.eth.Contract(
+      pachisiCryptoNFTPredicitonABI,
+      config.nftCryptoPredictionContract
+    );
+    const usdBets = await _contract.methods.getUSDBets().call();
+
+    console.log(usdBets);
+    return usdBets;
   };
 
-  const getBalance = async (userAddress) => {
-    const balance = await daiContract.methods.balanceOf(userAddress).call();
-    return balance;
+  const agreeBet = async (
+    _assetNFTAddress,
+    _tokenID,
+    _betAddress,
+    _userAddress
+  ) => {
+    const web3 = new Web3(window.ethereum);
+    const _contract = new web3.eth.Contract(
+      pachisiCryptoNFTPredicitonABI,
+      config.nftCryptoPredictionContract
+    );
+    _contract.methods
+      .agreeBet(_assetNFTAddress, _tokenID, _betAddress)
+      .send({ from: _userAddress });
+  };
+
+  const denyBet = async (_betAddress, _userAddress) => {
+    const web3 = new Web3(window.ethereum);
+    const _contract = new web3.eth.Contract(
+      pachisiCryptoNFTPredicitonABI,
+      config.nftCryptoPredictionContract
+    );
+    _contract.methods.denyBet(_betAddress).send({ from: _userAddress });
   };
 
   return (
-    <NFTPredictionContractContext.Provider value={{}}>
+    <NFTPredictionContractContext.Provider
+      value={{ createUSDBet, getUSDBets, agreeBet, denyBet }}>
       {props.children}
     </NFTPredictionContractContext.Provider>
   );
