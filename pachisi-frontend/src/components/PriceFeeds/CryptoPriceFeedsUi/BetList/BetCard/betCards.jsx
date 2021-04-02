@@ -73,7 +73,7 @@ const BetCard = (props) => {
 
   const init = async () => {
     const data = await getData(props.address, userAddress);
-    console.log(data);
+    console.log(data, "data");
     setBetPair(data["betPair"]);
     setBetToken(data["betToken"]);
     setBetResolveDate(new Date(parseInt(data["betResolveTime"] * 1000)));
