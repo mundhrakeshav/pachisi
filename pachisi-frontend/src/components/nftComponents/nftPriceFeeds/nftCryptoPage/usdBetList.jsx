@@ -145,7 +145,9 @@ const USDBetNFTCard = (props) => {
   const _denyBet = () => {
     denyBet(props.usdBetAddress, userAddress);
   };
-  const _finaliseBet = () => {};
+  const _finaliseBet = () => {
+    console.log(data);
+  };
 
   if (!isLoading) {
     return (
@@ -155,6 +157,17 @@ const USDBetNFTCard = (props) => {
           <Card.Subtitle>
             {"Predicted price of " + data.betToken}{" "}
             {data.symbol == 0x3c ? "<" : ">"} {data.predictionPrice / 10 ** 10}
+          </Card.Subtitle>
+          <br />
+          <Card.Subtitle>
+            {"Bet Resolve time: " +
+              new Date(parseInt(data.betResolveTime) * 1000).toString()}
+          </Card.Subtitle>
+          <br />
+          <Card.Subtitle>
+            {data.betStage == 4
+              ? "Resolved Price: " + parseInt(data.resolvedPrice) / 10 ** 8
+              : ""}
           </Card.Subtitle>
 
           <Row>
@@ -228,6 +241,9 @@ const USDBetNFTCard = (props) => {
                     backgroundColor: "#340068",
                     border: "1px solid #340068",
                     boxShadow: "10px 10px 8px #888888",
+                  }}
+                  onClick={() => {
+                    _finaliseBet();
                   }}>
                   Finalise Bet
                 </Button>
@@ -241,6 +257,9 @@ const USDBetNFTCard = (props) => {
                 backgroundColor: "#340068",
                 border: "1px solid #340068",
                 boxShadow: "10px 10px 8px #888888",
+              }}
+              onClick={() => {
+                _finaliseBet();
               }}>
               Claim Funds
             </Button>
