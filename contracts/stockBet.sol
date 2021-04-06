@@ -10,6 +10,8 @@ contract StockBet is ChainlinkClient, Ownable {
     
     address private oracle;
     bytes32 private getCallJobId;
+    address private tingoOracleAddress;
+    bytes32 private tingoJobID;
     bytes32 private alamClockJobId;
     uint256 private fee;
     
@@ -52,6 +54,8 @@ contract StockBet is ChainlinkClient, Ownable {
         getCallJobId = "29fa9aa13bf1468788b7cc4a500a45b8";
         alamClockJobId = "a7ab70d561d34eb49e9b1612fd2e044b";
         fee = 0.1 * 10 ** 18; // 0.1 LINK
+         tingoOracleAddress = 0x56dd6586DB0D08c6Ce7B2f2805af28616E082455;
+         tingoJobID = "4fbb2eec517440ca94982726f12ac523";
         url = _url;
         betResolveTime = _betResolveTime;
         betStock = _betStock;
@@ -133,6 +137,19 @@ contract StockBet is ChainlinkClient, Ownable {
         return sendChainlinkRequestTo(oracle, request, fee);
     }
     
+    
+    function getTingodata() public returns (bytes32 requestId) {
+        require(block.timestamp > betResolveTime);
+        Chainlink.Request memory request = buildChainlinkRequest(getCallJobId, address(this), this.fulfill.selector);
+//         tingoOracleAddress
+// tingoJobID
+          Chainlink.Request memory req = buildChainlinkRequest(tingoJobID, address(this), this.fulfill.selector);
+          req.add("field", "close");
+          req.add("ticker", betStock);
+          req.addInt("times", 100000000);
+          sendChainlinkRequestTo(tingoOracleAddress, req, fee);
+        
+    }
     /**
      * Receive the response in the form of uint256
      */ 
